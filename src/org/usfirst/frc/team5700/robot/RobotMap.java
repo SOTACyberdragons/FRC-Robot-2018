@@ -12,4 +12,5 @@ public class RobotMap {
 	public static final int RIGHT_DRIVE_MOTOR = 1;
 	public static final int RIGHT_INTAKE_MOTOR = 2;
 	public static final int LEFT_INTAKE_MOTOR = 3;
+	public static final int ELEVATION_MOTOR_GIVES_YOU_LOTS_OF_LIFT_YUM_YUM = 4;
 }
