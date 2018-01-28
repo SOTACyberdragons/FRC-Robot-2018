@@ -3,6 +3,7 @@ package org.usfirst.frc.team5700.robot;
 
 import org.usfirst.frc.team5700.robot.subsystems.BoxIntake;
 import org.usfirst.frc.team5700.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team5700.robot.subsystems.RungClimber;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
@@ -31,7 +32,7 @@ public class Robot extends IterativeRobot {
 	public static OI oi;
 	public static DriveTrain drivetrain;
 	public static BoxIntake boxIntake;
-
+	public static RungClimber rungClimber; 
 
 
 
