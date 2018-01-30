@@ -5,22 +5,33 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 import org.usfirst.frc.team5700.robot.commands.ExampleCommand;
+import org.usfirst.frc.team5700.robot.commands.ManualIntakeOut;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-	JoystickButton spinIntake;
 	private Joystick rightStick = new Joystick(0);
 	private Joystick leftStick = new Joystick(1);
 	
-	
+	//gear intake
+	JoystickButton intakeBox;
 	
 	public OI() {
 	//set buttons
-	spinIntake = new JoystickButton(rightStick, ButtonMap.INTAKE_BOX );
+	intakeBox = new JoystickButton(rightStick, ButtonMap.INTAKE_BOX );
 	
+	//set commands
+	intakeBox.whileHeld(new ManualIntakeOut(-0.6, -0.3));
+	}
+	
+	public Joystick getLeftStick() {
+    	return leftStick;	
+	}
+    
+	public Joystick getRightStick() {
+    	return rightStick;
 	}
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
