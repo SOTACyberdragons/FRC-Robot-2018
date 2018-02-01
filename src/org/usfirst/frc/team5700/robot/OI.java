@@ -1,7 +1,6 @@
 package org.usfirst.frc.team5700.robot;
 
 import org.usfirst.frc.team5700.robot.commands.IntakeBox;
-import org.usfirst.frc.team5700.robot.commands.ManualBoxIntake;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -41,7 +40,6 @@ public class OI {
 		//set commands
 		//box intake
 		intakeBox.whileHeld(new IntakeBox());
-		intakeArmsManual.whileHeld(new ManualBoxIntake());
 	}
 
 	public Joystick getLeftStick() {
