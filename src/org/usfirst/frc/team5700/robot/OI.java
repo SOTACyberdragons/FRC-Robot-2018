@@ -62,7 +62,7 @@ public class OI {
 		extendRight.whileHeld(new ExtendRight());
 		spitAndExtend.whileHeld(new IntakeSpitAndExtend());
 		dingusGo.whileHeld(new DingusGo());
-\
+
 		//climber
 		climberUp.whileHeld(new ClimberUp());
 		climberDown.whileHeld(new ClimberDown());
@@ -71,22 +71,14 @@ public class OI {
 		
 	}
 	
-	public Joystick getDriveLeftStick() {
-		return driveLeftStick;	
+	public Joystick getLeftstick() {
+		return leftstick;	
 	}
 
-	public Joystick getDriveRightStick() {
-		return driveRightStick;
+	public Joystick getRightstick() {
+		return rightstick;
 	}
 	
-	public Joystick getAuxLeftStick() {
-		return auxLeftStick;	
-	}
-
-	public Joystick getAuxRightStick() {
-		return auxRightStick;
-	}
-
 	public boolean getSquaredInput() {
 		return squaredInput;
 	}

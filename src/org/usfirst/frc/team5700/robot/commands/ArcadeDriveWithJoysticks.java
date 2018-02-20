@@ -11,7 +11,7 @@ public class ArcadeDriveWithJoysticks extends Command {
 	}
 
 	protected void execute() {
-		Robot.drivetrain.arcadeDrive(Robot.oi.getDriveRightStick(), Robot.oi.getDriveLeftStick(),
+		Robot.drivetrain.arcadeDrive(Robot.oi.getRightstick(), Robot.oi.getLeftstick(),
 				Robot.oi.getSquaredInput());
 	}
 
