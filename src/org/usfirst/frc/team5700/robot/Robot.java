@@ -1,13 +1,11 @@
 
 package org.usfirst.frc.team5700.robot;
 
-import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
 import org.usfirst.frc.team5700.robot.subsystems.BoxIntake;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
 import org.usfirst.frc.team5700.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team5700.robot.subsystems.Elevator;
-import org.usfirst.frc.team5700.robot.subsystems.Grabber;
+
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
@@ -36,10 +34,7 @@ public class Robot extends IterativeRobot {
 	public static OI oi;
 	public static DriveTrain drivetrain;
 	public static BoxIntake boxIntake;
-	public static Elevator elevator;
 	public static Climber climber; 
-	public static Arm arm; 
-	public static Grabber grabber;
 	public static AssistSystem assistSystem;
 
 
@@ -54,10 +49,7 @@ public class Robot extends IterativeRobot {
 		// Initialize all subsystems
 		drivetrain = new DriveTrain();
 		boxIntake = new BoxIntake();
-		elevator = new Elevator();
 		climber = new Climber();
-		arm = new Arm();
-		grabber = new Grabber();
 		assistSystem = new AssistSystem();
 		oi = new OI();
 

@@ -5,8 +5,6 @@ import org.usfirst.frc.team5700.robot.commands.ClimberUp;
 import org.usfirst.frc.team5700.robot.commands.DingusGo;
 import org.usfirst.frc.team5700.robot.commands.ExtendLeft;
 import org.usfirst.frc.team5700.robot.commands.ExtendRight;
-import org.usfirst.frc.team5700.robot.commands.GrabberClose;
-import org.usfirst.frc.team5700.robot.commands.GrabberOpen;
 import org.usfirst.frc.team5700.robot.commands.IntakeBox;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpinIn;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpitAndExtend;
@@ -41,8 +39,6 @@ public class OI {
 	JoystickButton extendLeft;
 	JoystickButton intakeBox;
 	JoystickButton spitAndExtend;
-//	JoystickButton grabberOpen;
-//	JoystickButton grabberClose;
 	JoystickButton climberUp;
 	JoystickButton climberDown;
 	JoystickButton dingusGo; 
@@ -55,8 +51,6 @@ public class OI {
 		extendLeft = new JoystickButton(driveRightStick, ButtonMap.EXTEND_LEFT);
 		intakeBox = new JoystickButton (driveRightStick, ButtonMap.INTAKE_BOX);
 		spitAndExtend = new JoystickButton (driveLeftStick, ButtonMap.SPIT_AND_EXTEND);
-//		grabberOpen = new JoystickButton(auxRightStick, ButtonMap.GRABBER_OPEN);
-//		grabberClose = new JoystickButton(auxRightStick, ButtonMap.GRABBER_CLOSE);
 		climberUp = new JoystickButton(auxRightStick, ButtonMap.CLIMBER_UP);
 		climberDown = new JoystickButton(auxLeftStick, ButtonMap.CLIMBER_DOWN);
 		dingusGo = new JoystickButton(driveRightStick, ButtonMap.DINGUS_GO);
@@ -69,9 +63,6 @@ public class OI {
 		extendRight.whileHeld(new ExtendRight());
 		spitAndExtend.whileHeld(new IntakeSpitAndExtend());
 		dingusGo.whileHeld(new DingusGo());
-//		//grabber
-//		grabberOpen.whenPressed(new GrabberOpen());
-//		grabberClose.whenPressed(new GrabberClose());
 		//climber
 		climberUp.whileHeld(new ClimberUp());
 		climberDown.whileHeld(new ClimberDown());
