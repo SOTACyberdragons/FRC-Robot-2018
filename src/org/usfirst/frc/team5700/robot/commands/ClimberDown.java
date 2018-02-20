@@ -20,7 +20,7 @@ public class ClimberDown extends Command {
     }
 
     protected void execute() {
-    	Robot.climber.down(-(Robot.oi.getRightstick().getThrottle() + 1)/2.0);
+    	Robot.climber.down((Robot.oi.getRightstick().getZ() + 1)/2.0);
     }
 
     protected boolean isFinished() {

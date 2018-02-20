@@ -18,7 +18,7 @@ public class ClimberUp extends Command {
     }
 
     protected void execute() {
-    	Robot.climber.up((Robot.oi.getLeftstick().getThrottle() + 1)/2.0);
+    	Robot.climber.up(-(Robot.oi.getLeftstick().getZ() + 1)/2.0);
     }
 
     protected boolean isFinished() {
