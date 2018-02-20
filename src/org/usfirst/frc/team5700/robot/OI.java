@@ -25,10 +25,9 @@ public class OI {
 	private boolean toggle = false;
 	private boolean hasBeenPressed = false;
 
-	private Joystick driveRightStick = new Joystick(0);
-	private Joystick driveLeftStick = new Joystick(1);
-	private Joystick auxRightStick = new Joystick(2);
-	private Joystick auxLeftStick = new Joystick(3);
+	private Joystick rightstick = new Joystick(0);
+	private Joystick leftstick = new Joystick(1);
+
 	
 	// Setting squaredInput to true decreases the sensitivity for tankdrive at lower speeds
 	private boolean squaredInput = true;
@@ -45,16 +44,16 @@ public class OI {
 	JoystickButton releaseAssist;
 	
 	public OI() {
-		slowDrive = new JoystickButton(driveRightStick, ButtonMap.SLOW_DRIVE);
-		toggleDirection = new JoystickButton(driveRightStick, ButtonMap.TOGGLE_DIRECTION);
-		extendRight = new JoystickButton(driveRightStick, ButtonMap.EXTEND_RIGHT);
-		extendLeft = new JoystickButton(driveRightStick, ButtonMap.EXTEND_LEFT);
-		intakeBox = new JoystickButton (driveRightStick, ButtonMap.INTAKE_BOX);
-		spitAndExtend = new JoystickButton (driveLeftStick, ButtonMap.SPIT_AND_EXTEND);
-		climberUp = new JoystickButton(auxRightStick, ButtonMap.CLIMBER_UP);
-		climberDown = new JoystickButton(auxLeftStick, ButtonMap.CLIMBER_DOWN);
-		dingusGo = new JoystickButton(driveRightStick, ButtonMap.DINGUS_GO);
-		releaseAssist = new JoystickButton(auxRightStick, ButtonMap.ASSIST_RELEASE);
+		slowDrive = new JoystickButton(rightstick, ButtonMap.SLOW_DRIVE);
+		toggleDirection = new JoystickButton(rightstick, ButtonMap.TOGGLE_DIRECTION);
+		extendRight = new JoystickButton(rightstick, ButtonMap.EXTEND_RIGHT);
+		extendLeft = new JoystickButton(rightstick, ButtonMap.EXTEND_LEFT);
+		intakeBox = new JoystickButton (rightstick, ButtonMap.INTAKE_BOX);
+		spitAndExtend = new JoystickButton (leftstick, ButtonMap.SPIT_AND_EXTEND);
+		climberUp = new JoystickButton(rightstick, ButtonMap.CLIMBER_UP);
+		climberDown = new JoystickButton(rightstick, ButtonMap.CLIMBER_DOWN);
+		dingusGo = new JoystickButton(rightstick, ButtonMap.DINGUS_GO);
+		releaseAssist = new JoystickButton(rightstick, ButtonMap.ASSIST_RELEASE);
 		
 		//set commands
 		//box intake
@@ -63,6 +62,7 @@ public class OI {
 		extendRight.whileHeld(new ExtendRight());
 		spitAndExtend.whileHeld(new IntakeSpitAndExtend());
 		dingusGo.whileHeld(new DingusGo());
+\
 		//climber
 		climberUp.whileHeld(new ClimberUp());
 		climberDown.whileHeld(new ClimberDown());
