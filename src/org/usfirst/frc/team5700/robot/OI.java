@@ -2,11 +2,13 @@ package org.usfirst.frc.team5700.robot;
 
 import org.usfirst.frc.team5700.robot.commands.ClimberDown;
 import org.usfirst.frc.team5700.robot.commands.ClimberUp;
+import org.usfirst.frc.team5700.robot.commands.CloseForIntake;
 import org.usfirst.frc.team5700.robot.commands.DingusGo;
 import org.usfirst.frc.team5700.robot.commands.ExtendLeft;
 import org.usfirst.frc.team5700.robot.commands.ExtendRight;
 import org.usfirst.frc.team5700.robot.commands.IntakeBox;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpinIn;
+import org.usfirst.frc.team5700.robot.commands.IntakeSpinOut;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpitAndExtend;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpitOut;
 import org.usfirst.frc.team5700.robot.commands.ReleaseAssist;
@@ -42,7 +44,8 @@ public class OI {
 	JoystickButton climberDown;
 	JoystickButton dingusGo; 
 	JoystickButton releaseAssist;
-	
+	JoystickButton closeForIntake;
+	JoystickButton intakeSpinOut;
 	public OI() {
 		slowDrive = new JoystickButton(rightstick, ButtonMap.SLOW_DRIVE);
 		toggleDirection = new JoystickButton(rightstick, ButtonMap.TOGGLE_DIRECTION);
@@ -54,7 +57,8 @@ public class OI {
 		climberDown = new JoystickButton(rightstick, ButtonMap.CLIMBER_DOWN);
 		dingusGo = new JoystickButton(rightstick, ButtonMap.DINGUS_GO);
 		releaseAssist = new JoystickButton(rightstick, ButtonMap.ASSIST_RELEASE);
-		
+		closeForIntake = new JoystickButton(leftstick, ButtonMap.CLOSE_FOR_INTAKE);
+		intakeSpinOut = new JoystickButton(leftstick, ButtonMap.SPIN_INTAKE_OUT);
 		//set commands
 		//box intake
 		intakeBox.whileHeld(new IntakeBox());
@@ -62,6 +66,8 @@ public class OI {
 		extendRight.whileHeld(new ExtendRight());
 		spitAndExtend.whileHeld(new IntakeSpitAndExtend());
 		dingusGo.whileHeld(new DingusGo());
+		closeForIntake.whileHeld(new CloseForIntake());
+		intakeSpinOut.whileHeld(new IntakeSpinOut());
 
 		//climber
 		climberUp.whileHeld(new ClimberUp());

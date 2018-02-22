@@ -13,6 +13,8 @@ public class ButtonMap {
 		public static int INTAKE_BOX = 1; //rightstick
 		public static int SPIT_AND_EXTEND = 1;//leftstick
 		public static int DINGUS_GO = 5;//rightstick
+		public static int CLOSE_FOR_INTAKE = 2; //leftstick
+		public static int SPIN_INTAKE_OUT = 2; //leftstick
 		//Climber
 		public static final int CLIMBER_UP = 6;//rightstick
 		public static final int CLIMBER_DOWN = 7;//rightstick
