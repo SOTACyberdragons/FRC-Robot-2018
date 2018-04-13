@@ -5,6 +5,8 @@
 package org.usfirst.frc.team5700.robot.commands;
 
 import org.usfirst.frc.team5700.robot.Robot;
+import org.usfirst.frc.team5700.robot.subsystems.Drivetrain;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -51,7 +53,7 @@ public class TurnRadiusPastAngle extends Command {
 
 	@Override
 	protected void execute() {
-		Robot.drivetrain.safeArcadeDrive(turnSpeed, turnDirection * Math.exp(-turnRadiusIn / Robot.drivetrain.WHEEL_BASE_WIDTH_IN));
+		Robot.drivetrain.safeArcadeDrive(turnSpeed, turnDirection * Math.exp(-turnRadiusIn / Drivetrain.kWheelBaseWidth));
 	}
 
 	@Override

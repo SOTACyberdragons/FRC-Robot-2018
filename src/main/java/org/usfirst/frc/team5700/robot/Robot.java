@@ -13,23 +13,20 @@ import org.usfirst.frc.team5700.robot.commands.AutoCrossBaseline;
 import org.usfirst.frc.team5700.robot.commands.AutoDoNotMove;
 import org.usfirst.frc.team5700.robot.commands.AutoLeftSideScale;
 import org.usfirst.frc.team5700.robot.commands.AutoLeftSideSwitch;
-import org.usfirst.frc.team5700.robot.commands.AutoRightSideScale;
-import org.usfirst.frc.team5700.robot.commands.ResetArmEncoder;
-import org.usfirst.frc.team5700.robot.commands.ResetElevatorEncoder;
 import org.usfirst.frc.team5700.robot.commands.AutoRightSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.DriveReplay;
-import org.usfirst.frc.team5700.robot.commands.ReplayWithCommands;
 import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
-import org.usfirst.frc.team5700.robot.subsystems.Intake;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
-import org.usfirst.frc.team5700.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team5700.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5700.robot.subsystems.Elevator;
 import org.usfirst.frc.team5700.robot.subsystems.Grabber;
+import org.usfirst.frc.team5700.robot.subsystems.Intake;
 import org.usfirst.frc.team5700.utils.CsvLogger;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -55,7 +52,7 @@ public class Robot extends IterativeRobot {
 
 
 	public static OI oi;
-	public static DriveTrain drivetrain;
+	public static Drivetrain drivetrain;
 	public static Intake intake;
 	public static Elevator elevator;
 	public static Climber climber; 
@@ -97,7 +94,7 @@ public class Robot extends IterativeRobot {
 		prefs = Preferences.getInstance();
 		
 		// Initialize all subsystems
-		drivetrain = new DriveTrain();
+		drivetrain = new Drivetrain();
 		intake = new Intake();
 		elevator = new Elevator();
 		climber = new Climber();
@@ -105,6 +102,7 @@ public class Robot extends IterativeRobot {
 		grabber = new Grabber();
 		assistSystem = new AssistSystem();
 		oi = new OI();
+		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 
 		// instantiate the command used for the autonomous period
@@ -123,7 +121,6 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Replay Test", "Replay Test");
 		chooser.addObject("Left Side Switch or Scale", "Left Side Switch or Scale");
  		SmartDashboard.putData("Autonomous Chooser", chooser);
- 		SmartDashboard.putData("Autonomous Chooser 2", chooser);
 		//autoSelected = chooser.getSelected();
  		
 		setupRecordMode();
@@ -254,13 +251,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		
 	
-		//Drivetrain
-		SmartDashboard.putNumber("Drivetrain speed in per s", drivetrain.getAverageEncoderRate());
-		SmartDashboard.putNumber("Right encoder distance", drivetrain.getRightEncoder().getDistance());
-		SmartDashboard.putNumber("Left encoder distance", drivetrain.getLeftEncoder().getDistance());
-		
 		//Elevator
 		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
 		
@@ -289,9 +280,7 @@ public class Robot extends IterativeRobot {
 			e.printStackTrace();
 		}
 
-
 		SmartDashboard.putData("ReplaySelector", replayChooser);
-		SmartDashboard.putData("ReplaySelector 2", replayChooser);
 	}
 
 	@Override
@@ -305,6 +294,7 @@ public class Robot extends IterativeRobot {
 		
 		setupRecordMode();
 		listReplays();
+		drivetrain.resetSensors();
 
 		recordMode = recordModeChooser.getSelected();
 
@@ -318,17 +308,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();	
-
-		//Drivetrain
-		SmartDashboard.putNumber("Drivetrain speed in per s", drivetrain.getAverageEncoderRate());
-		SmartDashboard.putNumber("Right encoder distance", drivetrain.getRightEncoder().getDistance());
-		SmartDashboard.putNumber("Left encoder distance", drivetrain.getLeftEncoder().getDistance());
-
-		SmartDashboard.putNumber("Accelerometer X-axis", drivetrain.getXAccel());
-		SmartDashboard.putNumber("Accelerometer Y-axis", drivetrain.getYAccel());
-		SmartDashboard.putNumber("Accelerometer Z-axis", drivetrain.getZAccel());
-		
-		SmartDashboard.putNumber("Gyro Degrees", drivetrain.getHeading());
 		
 		//Intake
 		SmartDashboard.putBoolean("Front Break Beam", intake.getFrontBreakBeam());
@@ -358,7 +337,6 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		LiveWindow.run();
 	}
 	
 	public static String recordMode() {

@@ -160,7 +160,7 @@ public class DriveReplayMirror extends Command {
 		
 		//swap motor outputs if mirrored
 
-		Robot.drivetrain.drive.tankDrive(mirror ? rightMotorSpeed : leftMotorSpeed, 
+		Robot.drivetrain.tankDrive(mirror ? rightMotorSpeed : leftMotorSpeed, 
 				mirror ? leftMotorSpeed : rightMotorSpeed, false); //disable squared
 		if (valuesIterator.hasNext()) {
 			line = valuesIterator.next();

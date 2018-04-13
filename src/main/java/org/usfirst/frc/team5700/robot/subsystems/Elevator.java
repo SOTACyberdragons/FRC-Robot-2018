@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -29,7 +30,7 @@ public class Elevator extends Subsystem {
 	private double lowNoCubeFF, highNoCubeFF, lowWCubeFF, highWCubeFF;
 
 	//Motor Controller
-	private TalonSRX talon = new TalonSRX(1);
+	private WPI_TalonSRX talon = new WPI_TalonSRX(1);
 
 
 	//Limit Hall Effect Sensors
@@ -47,6 +48,8 @@ public class Elevator extends Subsystem {
 	public static final double encoderMaxSpeed = 30100; //ticks per 100 ms
 
 	public Elevator() {
+		
+		super();
 
 		//Preferences table
 		Preferences prefs = Preferences.getInstance();
@@ -55,6 +58,9 @@ public class Elevator extends Subsystem {
 		//		topLimit = new DigitalInput(RobotMap.TOP_LIMIT_PORT);
 		//		interstageLimit = new DigitalInput(RobotMap.INTERSTAGE_LIMIT_PORT);
 		//		bottomLimit = new DigitalInput(RobotMap.BOTTOM_LIMIT_PORT);
+		
+		/* add name for Shuffleboard */
+		talon.setName("Elevator", "Talon");
 
 		/* first choose the sensor */
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.kTimeoutMs);

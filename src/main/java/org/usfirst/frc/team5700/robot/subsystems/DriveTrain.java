@@ -4,71 +4,80 @@ import org.usfirst.frc.team5700.robot.Robot;
 import org.usfirst.frc.team5700.robot.RobotMap;
 import org.usfirst.frc.team5700.robot.commands.ArcadeDriveWithJoysticks;
 import org.usfirst.frc.team5700.utils.BoostFilter;
-import org.usfirst.frc.team5700.utils.SquareFilter;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- *
- */
-public class DriveTrain extends Subsystem {
 
-	public static double maxSideAccel;
-
-	private SpeedController leftMotor = new Spark(RobotMap.LEFT_DRIVE_MOTOR);
-	private SpeedController rightMotor = new Spark(RobotMap.RIGHT_DRIVE_PWM);
-
-	public RobotDrive drive = new RobotDrive(leftMotor, rightMotor);
-	private BuiltInAccelerometer accel = new BuiltInAccelerometer();
-
-	private ADXRS450_Gyro gyro = new ADXRS450_Gyro();
-	Timer timer = new Timer();
+public class Drivetrain extends Subsystem {
 
 	//Encoder specs: S4T-360-250-S-D (usdigital.com)
 	//S4T Shaft Encoder, 360 CPR, 1/4" Dia Shaft, Single-Ended, Default Torque
 	//Encoder Distance Constants
-	public final static double WHEEL_BASE_WIDTH_IN = 25; //TOOD find
-	public final static double WHEEL_DIAMETER = 6;
-	public final static double PULSE_PER_REVOLUTION = 360;
+	public final static double kWheelBaseWidth = 25; //TOOD find
+	public final static double kWheelDiameter = 6;
+	public final static double kPulsePerRevolution = 360;
+	public final static double kDistancePerPulse = Math.PI * kWheelDiameter / kPulsePerRevolution;
 
-	private Encoder leftEncoder = new Encoder(RobotMap.LeftEncoderAChannel, RobotMap.LeftEncoderBChannel, false);
-	private Encoder rightEncoder = new Encoder(RobotMap.RightEncoderAChannel, RobotMap.RightEncoderBChannel, true);
+	//motors and drive
+	private SpeedController m_leftMotor;
+	private SpeedController m_rightMotor;
+	private DifferentialDrive m_drive;
+	
+	//sensors
+	private Encoder m_leftEncoder;
+	private Encoder m_rightEncoder;
+	@SuppressWarnings("unused")
+	private BuiltInAccelerometer m_accel;
+	private ADXRS450_Gyro m_gyro;
+	
+	private Timer m_timer;
 
-	Preferences prefs = Preferences.getInstance();
+	private Preferences m_prefs;
 
 	//input limiting fields
-	private double previousMoveValue = 0;
-	private double positiveInputChangeLimit;
-	private double moveBoost;
-	private double rotateBoost;
-	private double requestedMoveChange;
-	private double limitedMoveValue;
-	private double negativeInputChangeLimit;
-	private boolean positiveInputLimitActive;
-	private boolean negativeInputLimitActive;
-	private double newRotateValue;
-	private boolean rotateInputLimitActive;
+	private double m_positiveInputChangeLimit;
+	private double m_negativeInputChangeLimit;
+	private double m_previousMoveValue;
+	private double m_requestedMoveChange;
+	private double m_limitedMoveValue;
 
-	final static double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / PULSE_PER_REVOLUTION;
+	private boolean m_positiveInputLimitActive;
+	private boolean m_negativeInputLimitActive;
+	
+	private double m_moveBoost;
+	private double m_rotateBoost;
 
-	public DriveTrain() {
-		leftEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
-		rightEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+	public Drivetrain() {
 
-		leftMotor.setInverted(false);
-		rightMotor.setInverted(false);
+		super();
+		
+		m_leftMotor = new Spark(RobotMap.kLeftDriveMotor);
+		m_rightMotor = new Spark(RobotMap.kRightDriveMotor);
+		m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+		
+		m_leftEncoder = new Encoder(RobotMap.LeftEncoderAChannel, RobotMap.LeftEncoderBChannel, false);
+		m_rightEncoder = new Encoder(RobotMap.RightEncoderAChannel, RobotMap.RightEncoderBChannel, true);
+		m_accel = new BuiltInAccelerometer();
+		m_gyro = new ADXRS450_Gyro();
+		
+		m_leftEncoder.setDistancePerPulse(kDistancePerPulse);
+		m_rightEncoder.setDistancePerPulse(kDistancePerPulse);
 
+		m_timer = new Timer();
+		m_timer.start();
+		
+		m_prefs = Preferences.getInstance();
 		resetSensors();
-		timer.start();
+		
 	}
 
 	/**
@@ -80,70 +89,48 @@ public class DriveTrain extends Subsystem {
 	 * Input from joystick should already be filtered for sensitivity
 	 */
 	public void safeArcadeDrive(double moveValue, double rotateValue) {
-		requestedMoveChange = moveValue - previousMoveValue;
-		limitedMoveValue = moveValue;
-		positiveInputLimitActive = false;
-		negativeInputLimitActive = false;
+		
+		m_requestedMoveChange = moveValue - m_previousMoveValue;
+		m_limitedMoveValue = moveValue;
+		m_positiveInputLimitActive = false;
+		m_negativeInputLimitActive = false;
 
-		boolean useMoveInputLimit = prefs.getBoolean("useMoveInputLimit", true);
-		prefs.putBoolean("useMoveInputLimit", useMoveInputLimit);
+		boolean useMoveInputLimit = m_prefs.getBoolean("Drivetrain/useMoveInputLimit", true);
+		m_prefs.putBoolean("Drivetrain/useMoveInputLimit", useMoveInputLimit);
 
-		SmartDashboard.putBoolean("useMoveInputLimit", useMoveInputLimit);
+		SmartDashboard.putBoolean("Drivetrain/useMoveInputLimit", useMoveInputLimit);
 		if (useMoveInputLimit) {
 			//check positive change
-			positiveInputChangeLimit = prefs.getDouble("positiveInputChangeLimit", 0.025);
-			prefs.putDouble("positiveInputChangeLimit", positiveInputChangeLimit);
-			negativeInputChangeLimit = prefs.getDouble("negativeInputChangeLimit", 0.025);
-			prefs.putDouble("negativeInputChangeLimit", negativeInputChangeLimit);
+			m_positiveInputChangeLimit = m_prefs.getDouble("Drivetrain/positiveInputChangeLimit", 0.025);
+			m_prefs.putDouble("Drivetrain/positiveInputChangeLimit", m_positiveInputChangeLimit);
+			m_negativeInputChangeLimit = m_prefs.getDouble("Drivetrain/negativeInputChangeLimit", 0.025);
+			m_prefs.putDouble("Drivetrain/negativeInputChangeLimit", m_negativeInputChangeLimit);
 
-			if (requestedMoveChange > positiveInputChangeLimit) {
-				positiveInputLimitActive = true;
-				limitedMoveValue = previousMoveValue + positiveInputChangeLimit;
+			if (m_requestedMoveChange > m_positiveInputChangeLimit) {
+				
+				m_positiveInputLimitActive = true;
+				m_limitedMoveValue = m_previousMoveValue + m_positiveInputChangeLimit;
 
 			}
-			if (requestedMoveChange < - negativeInputChangeLimit) {
-				negativeInputLimitActive = true;
-				limitedMoveValue = previousMoveValue - negativeInputChangeLimit;
+			if (m_requestedMoveChange < - m_negativeInputChangeLimit) {
+				
+				m_negativeInputLimitActive = true;
+				m_limitedMoveValue = m_previousMoveValue - m_negativeInputChangeLimit;
+				
 			}
 		}
 
-		//rotational accel.
-		boolean useRotationInputLimit = prefs.getBoolean("useRotationInputLimit", false);
-		prefs.putBoolean("useRotationInputLimit", useRotationInputLimit);
-
-		SmartDashboard.putBoolean("useRotationInputLimit", useRotationInputLimit);
-		double speed = getAverageEncoderRate();
-		rotateInputLimitActive = false;
-		newRotateValue = rotateValue;
-		if (useRotationInputLimit) {
-
-			double turnRadiusIn = -Math.log(rotateValue) * WHEEL_BASE_WIDTH_IN;
-			maxSideAccel = prefs.getDouble("maxSideAccel", 60);
-			prefs.putDouble("maxSideAccel", maxSideAccel);
-			double radiusThreshhold = prefs.getDouble("radiusThreshhold", 10);
-			prefs.putDouble("radiusThreshold", radiusThreshhold);
-			double wantedSideAccel = Math.pow(speed, 2) / turnRadiusIn;
-			//
-			if (turnRadiusIn > radiusThreshhold && wantedSideAccel > maxSideAccel) {
-				newRotateValue = Math.exp((-Math.pow(speed,
-						2) / maxSideAccel) / WHEEL_BASE_WIDTH_IN);
-				rotateInputLimitActive = true;
-			}
-
-			SmartDashboard.putBoolean("positiveInputLimitActive", positiveInputLimitActive);
-			SmartDashboard.putBoolean("negativeInputLimitActive", negativeInputLimitActive);
-			SmartDashboard.putNumber("accelerometer -Y", - accel.getY());
-			SmartDashboard.putNumber("accelerometer X", accel.getX());
-		}
-
-		previousMoveValue = limitedMoveValue;
-		boostedArcadeDrive(limitedMoveValue, newRotateValue);
+		SmartDashboard.putBoolean("Drivetrain/positiveInputLimitActive", m_positiveInputLimitActive);
+		SmartDashboard.putBoolean("Drivetrain/negativeInputLimitActive", m_negativeInputLimitActive);
+		
+		m_previousMoveValue = m_limitedMoveValue;
+		boostedArcadeDrive(m_limitedMoveValue, rotateValue);
 	}
 
-	public void safeArcadeDriveDelayed(double moveValue, double rotateValue) {
-//		System.out.println("Timer before delay: " + timer.get());
-		Timer.delay(0.01);
-//		System.out.println("Timer after delay: " + timer.get());
+	public void safeArcadeDriveDelayed(double moveValue, double rotateValue, double delay) {
+		//		System.out.println("Timer before delay: " + timer.get());
+		Timer.delay(delay);
+		//		System.out.println("Timer after delay: " + timer.get());
 		safeArcadeDrive(moveValue, rotateValue);
 	}
 
@@ -156,15 +143,16 @@ public class DriveTrain extends Subsystem {
 	 */
 	public void boostedArcadeDrive(double moveValue, double rotateValue) {
 
-		moveBoost = prefs.getDouble("moveBoost", 0.05);
-		rotateBoost = prefs.getDouble("rotateBoost", 0.05);
-		BoostFilter moveBoostFilter = new BoostFilter(moveBoost);
-		BoostFilter rotateBoostFilter = new BoostFilter(rotateBoost);
+		m_moveBoost = m_prefs.getDouble("Drivetrain/moveBoost", 0.05);
+		m_rotateBoost = m_prefs.getDouble("Drivetrain/rotateBoost", 0.05);
+		
+		BoostFilter moveBoostFilter = new BoostFilter(m_moveBoost);
+		BoostFilter rotateBoostFilter = new BoostFilter(m_rotateBoost);
+		
 		arcadeDrive(moveBoostFilter.output(moveValue), rotateBoostFilter.output(rotateValue));
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public void arcadeDrive(double moveValue, double rotateValue) {
 
 		double leftMotorSpeed;
@@ -190,8 +178,8 @@ public class DriveTrain extends Subsystem {
 		double filteredLeftMotorSpeed = leftMotorSpeed; //SquareFilter.output(leftMotorSpeed);
 		double filteredRightMotorSpeed = rightMotorSpeed; //SquareFilter.output(rightMotorSpeed);
 
-		double turnCorrection = prefs.getDouble("turnCorrection", 0);
-		prefs.putDouble("turnCorrection", turnCorrection);
+		double turnCorrection = m_prefs.getDouble("Drivetrain/turnCorrection", 0);
+		m_prefs.putDouble("Drivetrain/turnCorrection", turnCorrection);
 
 		if (filteredLeftMotorSpeed > 0 && filteredRightMotorSpeed > 0) {
 			filteredLeftMotorSpeed *= 1 + turnCorrection;
@@ -200,79 +188,63 @@ public class DriveTrain extends Subsystem {
 
 		//always record values passed to the drive
 		Robot.csvLogger.writeData(
-				timer.get(), 
+				m_timer.get(), 
 				moveValue, //move input
 				rotateValue, //rotate input
 				filteredLeftMotorSpeed,
 				filteredRightMotorSpeed,
 				getAverageEncoderRate(),
-				leftEncoder.getRate(),
-				rightEncoder.getRate(),
-				leftEncoder.getDistance(),
-				rightEncoder.getDistance(),
-				gyro.getAngle()
+				m_leftEncoder.getRate(),
+				m_rightEncoder.getRate(),
+				m_leftEncoder.getDistance(),
+				m_rightEncoder.getDistance(),
+				m_gyro.getAngle()
 				);
 
-		drive.tankDrive(filteredLeftMotorSpeed, filteredRightMotorSpeed, false); //squared input by default
-	}
-
-	public void arcadeDriveDelayed(double moveValue, double rotateValue) {
-		arcadeDrive(moveValue, rotateValue);
-	}
-
-	public void drive(double outputMagnitude, double curve) {
-		drive.drive(-outputMagnitude, -(curve));
+		m_drive.tankDrive(filteredLeftMotorSpeed, filteredRightMotorSpeed, false); //squared input by default
 	}
 
 	public void stop() {
-		drive.drive(0.0, 0.0);
+		m_drive.tankDrive(0.0, 0.0);
 	}
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new ArcadeDriveWithJoysticks());
 	}
 
-	public double getXAccel() {
-		return accel.getX();
-	}
-
-	public double getYAccel() {
-		return accel.getY();
-	}
-
-	public double getZAccel() {
-		return accel.getZ();
-	}
-
 	public void resetSensors() {
-		gyro.reset();
-		leftEncoder.reset();
-		rightEncoder.reset();
+		m_gyro.reset();
+		m_leftEncoder.reset();
+		m_rightEncoder.reset();
 	}
 
 	public double getDistance() {
-		return (leftEncoder.getDistance() + rightEncoder.getDistance()) / 2;
+		return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance()) / 2;
 	}
 
 	/**
 	 * @return rate, ticks per second
 	 */
 	public double getAverageEncoderRate() {
-		return ((leftEncoder.getRate() + rightEncoder.getRate())/2);
+		return ((m_leftEncoder.getRate() + m_rightEncoder.getRate())/2);
 	}
 
 	public double getHeading() {
-		return gyro.getAngle();
+		return m_gyro.getAngle();
 	}
 
 	public Encoder getRightEncoder() {
-		return rightEncoder;
+		return m_rightEncoder;
 	}
 
 	public Encoder getLeftEncoder() {
-		return leftEncoder;
+		return m_leftEncoder;
 	}
-	
+
+	public void tankDrive(double leftSpeed, double rightSpeed, boolean squaredInputs) {
+		m_drive.tankDrive(leftSpeed, rightSpeed, squaredInputs);
+	}
+
 }
 
 

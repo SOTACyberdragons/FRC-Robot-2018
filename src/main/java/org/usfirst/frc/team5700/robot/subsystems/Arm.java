@@ -36,6 +36,8 @@ public class Arm extends Subsystem {
 	
 	public Arm() {
 		
+		super();
+		
 		_talon = new TalonSRX(2);
 		/* first choose the sensor */
 		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.kTimeoutMs);

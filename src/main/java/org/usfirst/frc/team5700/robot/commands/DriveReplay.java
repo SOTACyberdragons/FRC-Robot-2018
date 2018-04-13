@@ -150,7 +150,7 @@ public class DriveReplay extends Command {
 
 		Timer.delay(Math.max(periodic_offset, 0));
 		//Robot.drivetrain.arcadeDrive(nextLine[1], nextLine[2]);
-		Robot.drivetrain.drive.tankDrive(leftMotorSpeed, rightMotorSpeed, false); //disable squared
+		Robot.drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed, false); //disable squared
 		if (valuesIterator.hasNext()) {
 			line = valuesIterator.next();
 

@@ -14,6 +14,7 @@ public class AssistSystem extends Subsystem {
 	
 	public AssistSystem() {
 		super();
+		
 		piston = new DoubleSolenoid(RobotMap.ASSIST_HOLD_CHANNEL, RobotMap.ASSIST_RELEASE_CHANNEL);
 		piston.set(DoubleSolenoid.Value.kForward);
 	}

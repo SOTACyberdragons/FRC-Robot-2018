@@ -16,6 +16,8 @@ public class Climber extends Subsystem {
 	private SpeedController climberMotor = new Spark(RobotMap.CLIMBER_MOTOR);
 	
 	public Climber() {
+		super();
+		
 		climberMotor.setInverted(true);
 	}
 	
