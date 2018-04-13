@@ -15,6 +15,7 @@ import org.usfirst.frc.team5700.robot.commands.AutoLeftSideScale;
 import org.usfirst.frc.team5700.robot.commands.AutoLeftSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.AutoRightSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.DriveReplay;
+import org.usfirst.frc.team5700.robot.commands.FollowPath;
 import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
@@ -105,7 +106,7 @@ public class Robot extends IterativeRobot {
 		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 
-		// instantiate the command used for the autonomous period
+		SmartDashboard.putData("Follow Path", new FollowPath());
 		
 
 		// Show what command your subsystem is running on the SmartDashboard

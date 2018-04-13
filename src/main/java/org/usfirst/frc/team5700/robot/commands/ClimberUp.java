@@ -8,28 +8,28 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class ClimberUp extends Command {
-	
-    public ClimberUp() {
-    		requires(Robot.climber);
-       
-    }
 
-    protected void initialize() {
-    }
+	public ClimberUp() {
+		requires(Robot.climber);
 
-    protected void execute() {
-    	Robot.climber.up(1);
-    }
+	}
 
-    protected boolean isFinished() {
-        return false;
-    }
+	protected void initialize() {
+	}
 
-    protected void end() {
-    	Robot.climber.stop();
-    }
+	protected void execute() {
+		Robot.climber.up(1);
+	}
 
-    protected void interrupted() {
-    		end();
-    }
+	protected boolean isFinished() {
+		return false;
+	}
+
+	protected void end() {
+		Robot.climber.stop();
+	}
+
+	protected void interrupted() {
+		end();
+	}
 }

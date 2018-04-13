@@ -26,6 +26,9 @@ public class Drivetrain extends Subsystem {
 	public final static double kWheelDiameter = 6;
 	public final static double kPulsePerRevolution = 360;
 	public final static double kDistancePerPulse = Math.PI * kWheelDiameter / kPulsePerRevolution;
+	public final static double kMaxSpeed = 120.0;
+	public static final double kMaxAccel = 0.2 / 0.0254; //0.2g in in/s^2
+	public static final double kMaxJerk = 60 / 0.0254; //from example code in Pathfinder
 
 	//motors and drive
 	private SpeedController m_leftMotor;
@@ -150,6 +153,18 @@ public class Drivetrain extends Subsystem {
 		BoostFilter rotateBoostFilter = new BoostFilter(m_rotateBoost);
 		
 		arcadeDrive(moveBoostFilter.output(moveValue), rotateBoostFilter.output(rotateValue));
+
+	}
+	
+	public void boostedTankDrive(double leftMotorOutput, double rightMotorOutput) {
+
+		double leftBoost = 0.18;
+		double rightBoost = 0.17;
+		
+		BoostFilter leftBoostFilter = new BoostFilter(leftBoost);
+		BoostFilter rightBoostFilter = new BoostFilter(rightBoost);
+		
+		tankDrive(leftBoostFilter.output(leftMotorOutput), rightBoostFilter.output(rightMotorOutput), false);
 
 	}
 
