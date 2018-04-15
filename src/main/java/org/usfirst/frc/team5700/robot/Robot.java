@@ -94,14 +94,14 @@ public class Robot extends IterativeRobot {
 
 		prefs = Preferences.getInstance();
 		
-		// Initialize all subsystems
+//		// Initialize all subsystems
 		drivetrain = new Drivetrain();
-		intake = new Intake();
-		elevator = new Elevator();
-		climber = new Climber();
-		arm = new Arm();
-		grabber = new Grabber();
-		assistSystem = new AssistSystem();
+////		intake = new Intake();
+////		elevator = new Elevator();
+//		climber = new Climber();
+////		arm = new Arm();
+//		grabber = new Grabber();
+////		assistSystem = new AssistSystem();
 		oi = new OI();
 		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
@@ -127,7 +127,7 @@ public class Robot extends IterativeRobot {
 		setupRecordMode();
 		listReplays();
  		
- 		grabber.close();
+// 		grabber.close();
  		
 		System.out.println("Instantiating CsvLogger...");
 		csvLogger = new CsvLogger();
@@ -150,14 +150,14 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		grabber.close();
+//		grabber.close();
 
 	}
 
 
 	@Override
 	public void disabledPeriodic() {
-		grabber.close();
+//		grabber.close();
 		csvLogger.close();
 	}
 
@@ -178,7 +178,7 @@ public class Robot extends IterativeRobot {
 		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
 		
 		dropCube = false;
-		grabber.close();
+//		grabber.close();
 		autoSelected = chooser.getSelected();
 		
 		boolean switchOnRight = true;
@@ -253,12 +253,12 @@ public class Robot extends IterativeRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 	
-		//Elevator
-		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
-		
-		//Arm
-		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
-		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
+//		//Elevator
+//		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
+//		
+//		//Arm
+//		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
+//		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
 	}
 	
 	private void listReplays() {
@@ -310,27 +310,27 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();	
 		
-		//Intake
-		SmartDashboard.putBoolean("Front Break Beam", intake.getFrontBreakBeam());
-		SmartDashboard.putBoolean("Back Break Beam", intake.getBackBreakBeam());
-		SmartDashboard.putBoolean("In Vault Mode", intake.inVaultMode());
-		
-		//Elevator 
-		SmartDashboard.putNumber("Elevator Height", elevator.getHeight());
-		SmartDashboard.putNumber("Elevator Encoder Ticks", elevator.getEncoderTicks());
-		SmartDashboard.putNumber("Elevator Encoder Velocity", elevator.getVelocityTicks());
-		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
-		SmartDashboard.putBoolean("At Bottom Limit ", elevator.atBottomLimit());;
-		SmartDashboard.putBoolean("At Top Limit ", elevator.atTopLimit());
-		SmartDashboard.putBoolean("At Bottom Limit ", elevator.atBottomLimit());;
-		SmartDashboard.putBoolean("At Top Limit ", elevator.atTopLimit());
-		SmartDashboard.putBoolean("Limits Overriden ", oi.overrideLimits());
-													
-		// Arm
-		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
-		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
-		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
-		SmartDashboard.putNumber("Arm Normalized Angle ", arm.get180NormalizedAngle());
+//		//Intake
+//		SmartDashboard.putBoolean("Front Break Beam", intake.getFrontBreakBeam());
+//		SmartDashboard.putBoolean("Back Break Beam", intake.getBackBreakBeam());
+//		SmartDashboard.putBoolean("In Vault Mode", intake.inVaultMode());
+//		
+//		//Elevator 
+//		SmartDashboard.putNumber("Elevator Height", elevator.getHeight());
+//		SmartDashboard.putNumber("Elevator Encoder Ticks", elevator.getEncoderTicks());
+//		SmartDashboard.putNumber("Elevator Encoder Velocity", elevator.getVelocityTicks());
+//		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
+//		SmartDashboard.putBoolean("At Bottom Limit ", elevator.atBottomLimit());;
+//		SmartDashboard.putBoolean("At Top Limit ", elevator.atTopLimit());
+//		SmartDashboard.putBoolean("At Bottom Limit ", elevator.atBottomLimit());;
+//		SmartDashboard.putBoolean("At Top Limit ", elevator.atTopLimit());
+//		SmartDashboard.putBoolean("Limits Overriden ", oi.overrideLimits());
+//													
+//		// Arm
+//		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
+//		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
+//		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
+//		SmartDashboard.putNumber("Arm Normalized Angle ", arm.get180NormalizedAngle());
 	}
 
 	/**

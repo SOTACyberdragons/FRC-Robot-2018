@@ -43,6 +43,7 @@ public class ArcadeDriveWithJoysticks extends Command {
 		else
 			Robot.drivetrain.safeArcadeDrive(filteredMoveValue,
 					filteredRotateValue);
+//			Robot.drivetrain.boostedTankDrive(filteredMoveValue, filteredMoveValue);
 
 	}
 

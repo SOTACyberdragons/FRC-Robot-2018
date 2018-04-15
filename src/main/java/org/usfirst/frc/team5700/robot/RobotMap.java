@@ -38,9 +38,9 @@ public class RobotMap {
 	public static final int BackBreakBeamChannel = 9;
 	
 	//practice robot
-	public static final int LeftEncoderAChannel = 3;
-	public static final int LeftEncoderBChannel = 4;
-	public static final int RightEncoderAChannel = 0;
-	public static final int RightEncoderBChannel = 1;
+	public static final int LeftEncoderAChannel = 0;
+	public static final int LeftEncoderBChannel = 1;
+	public static final int RightEncoderAChannel = 3;
+	public static final int RightEncoderBChannel = 4;
 
 }
