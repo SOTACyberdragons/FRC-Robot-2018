@@ -17,12 +17,12 @@ import jaci.pathfinder.modifiers.TankModifier;
 
 public class FollowPath extends Command {
 
-	public static double kP = 0.15;
-	public static double kI = 0.002;
-	public static double kD = 0;
+	public static double kP;
+	public static double kI;
+	public static double kD;
 	public static double kF = 1 / Drivetrain.kMaxSpeed;
 	public static double kA = 0;
-	public static double kAngleP = 0; //0.8 * (-1.0/80.0);
+	public static double kAngleP;
 	private Trajectory trajectory;
 	private TankModifier modifier;
 	private DistanceFollower left;
@@ -30,6 +30,9 @@ public class FollowPath extends Command {
 	private Drivetrain drive;
 	private Preferences m_prefs;
 	private Timer m_timer;
+	private double m_angleError;
+	private double m_lastAngleError;
+	private double kAngleD;
 
 
 	public FollowPath() {
@@ -38,14 +41,14 @@ public class FollowPath extends Command {
 		m_prefs = Robot.prefs;
 		Waypoint[] points = new Waypoint[] {
 				new Waypoint(0, 0, 0),      // Waypoint @ x=-4, y=-1, exit angle=-45 degrees Pathfinder.d2r(-45)
-				new Waypoint(96, 0, Pathfinder.d2r(-45)),                     // Waypoint @ x=-2, y=-2, exit angle=0 radians
-				new Waypoint(120, -48, Pathfinder.d2r(-90))                           // Waypoint @ x=0, y=0,   exit angle=0 radians
+				new Waypoint(72, 24, Pathfinder.d2r(45)) //,                     // Waypoint @ x=-2, y=-2, exit angle=0 radians
+				//new Waypoint(120, -48, Pathfinder.d2r(-90))                           // Waypoint @ x=0, y=0,   exit angle=0 radians
 		};
 
 		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
 				Trajectory.Config.SAMPLES_HIGH, 
 				0.02, 
-				Drivetrain.kMaxSpeed, 
+				Drivetrain.kMaxSpeed * 0.6, 
 				Drivetrain.kMaxAccel, 
 				Drivetrain.kMaxJerk);
 
@@ -65,12 +68,14 @@ public class FollowPath extends Command {
 		drive.resetSensors();
 		m_timer.reset();
 		m_timer.start();
-		kP = m_prefs.getDouble("Pathfinder/kP", 0.15);
+		kP = m_prefs.getDouble("Pathfinder/kP", 0.45);
 		m_prefs.putDouble("Pathfinder/kP", kP);
-		kD = m_prefs.getDouble("Pathfinder/kD", 0.002);
+		kD = m_prefs.getDouble("Pathfinder/kD", 0.01);
 		m_prefs.putDouble("Pathfinder/kD", kD);
-		kAngleP = m_prefs.getDouble("Pathfinder/kAngleP", 0.001);
+		kAngleP = m_prefs.getDouble("Pathfinder/kAngleP", 0.05);
 		m_prefs.putDouble("Pathfinder/kAngleP", kAngleP);
+		kAngleD = m_prefs.getDouble("Pathfinder/kAngleD", 0.0);
+		m_prefs.putDouble("Pathfinder/kAngleD", kAngleD);
 		
 		// The first argument is the proportional gain. Usually this will be quite high
 		// The second argument is the integral gain. This is unused for motion profiling
@@ -90,16 +95,19 @@ public class FollowPath extends Command {
 		double leftMotorOutput = left.calculate(drive.getLeftEncoder().getDistance());
 		double rightMotorOutput = right.calculate(drive.getRightEncoder().getDistance());
 
-		double gyro_heading = - drive.getHeading();    // gyro is clockwise, pathfinder counter-clockwise
+		double gyroHeading = - drive.getHeading();    // gyro is clockwise, pathfinder counter-clockwise
 		double desiredHeading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
 		SmartDashboard.putNumber("Pathfinder/desiredHeading", desiredHeading);
 
-		double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyro_heading);
-		double angleCorrection = kAngleP * angleDifference;
-		SmartDashboard.putNumber("Pathfinder/angleCorrection", angleDifference);
+		m_angleError = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+		double angleErrorChange = m_lastAngleError - m_angleError;
+		m_lastAngleError = m_angleError;
+		SmartDashboard.putNumber("Pathfinder/angleError", m_angleError);
+		SmartDashboard.putNumber("Pathfinder/angleErrorChange", angleErrorChange);
 
 //		System.out.println("Pathfinder at " + m_timer.get() + ", output: " + leftMotorOutput);
-		drive.boostedTankDrive(leftMotorOutput - angleCorrection, rightMotorOutput + angleCorrection);
+		drive.boostedTankDrive(leftMotorOutput - (kAngleP * m_angleError - kAngleD * angleErrorChange), 
+				rightMotorOutput + (kAngleP * m_angleError - kAngleD * angleErrorChange));
 	}
 
 	protected boolean isFinished() {
