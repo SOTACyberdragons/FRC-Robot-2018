@@ -7,8 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 
-import org.usfirst.frc.team5700.robot.commands.AutoCenterToLeftSwitch;
-import org.usfirst.frc.team5700.robot.commands.AutoCenterToRightSwitch;
 import org.usfirst.frc.team5700.robot.commands.AutoCrossBaseline;
 import org.usfirst.frc.team5700.robot.commands.AutoDoNotMove;
 import org.usfirst.frc.team5700.robot.commands.AutoLeftSideScale;
@@ -16,6 +14,8 @@ import org.usfirst.frc.team5700.robot.commands.AutoLeftSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.AutoRightSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.DriveReplay;
 import org.usfirst.frc.team5700.robot.commands.FollowPath;
+import org.usfirst.frc.team5700.robot.paths.CenterToLeftSwitch;
+import org.usfirst.frc.team5700.robot.paths.CenterToRightSwitch;
 import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -84,6 +83,14 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<String> replayChooser;
 	
 	public static CsvLogger csvLogger;
+	private static Command centerToRightSwitchAuto;
+	private static Command centerToLeftSwitchAuto;
+	
+	private static void initPathCommands() {
+		double maxSpeed = Drivetrain.kMaxSpeed * 0.4;
+		centerToRightSwitchAuto = new FollowPath(CenterToRightSwitch.points(), maxSpeed, "CenterToRightSwitch");
+		centerToLeftSwitchAuto = new FollowPath(CenterToLeftSwitch.points(), maxSpeed, "CenterToLeftSwitch");
+	}
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -93,6 +100,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 
 		prefs = Preferences.getInstance();
+		initPathCommands();
 		
 //		// Initialize all subsystems
 		drivetrain = new Drivetrain();
@@ -103,10 +111,12 @@ public class Robot extends IterativeRobot {
 //		grabber = new Grabber();
 ////		assistSystem = new AssistSystem();
 		oi = new OI();
+		@SuppressWarnings("unused")
 		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 
-		SmartDashboard.putData("Follow Path", new FollowPath());
+		SmartDashboard.putData("Center To Right Switch", centerToRightSwitchAuto);
+		SmartDashboard.putData("Center To Left Switch", centerToLeftSwitchAuto);
 		
 
 		// Show what command your subsystem is running on the SmartDashboard
@@ -206,9 +216,9 @@ public class Robot extends IterativeRobot {
          		break;
          	case "Center Switch":
          		if (switchOnRight) {
-         			autoCommand = new AutoCenterToRightSwitch();
+         			autoCommand = centerToRightSwitchAuto;
          		} else {
-         			autoCommand = new AutoCenterToLeftSwitch();
+         			autoCommand = centerToLeftSwitchAuto;
          		}
          		break;
          	case "Right Side Switch":
@@ -277,7 +287,6 @@ public class Robot extends IterativeRobot {
 				replayChooser.addObject(replayFile, replayFile);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

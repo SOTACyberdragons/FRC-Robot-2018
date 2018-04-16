@@ -35,20 +35,16 @@ public class FollowPath extends Command {
 	private double kAngleD;
 
 
-	public FollowPath() {
-		
+	public FollowPath(Waypoint[] points, double maxSpeed, String fileName) {
+
 		m_timer = new Timer();
 		m_prefs = Robot.prefs;
-		Waypoint[] points = new Waypoint[] {
-				new Waypoint(0, 0, 0),      // Waypoint @ x=-4, y=-1, exit angle=-45 degrees Pathfinder.d2r(-45)
-				new Waypoint(72, 24, Pathfinder.d2r(45)) //,                     // Waypoint @ x=-2, y=-2, exit angle=0 radians
-				//new Waypoint(120, -48, Pathfinder.d2r(-90))                           // Waypoint @ x=0, y=0,   exit angle=0 radians
-		};
+		drive = Robot.drivetrain;
 
 		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
 				Trajectory.Config.SAMPLES_HIGH, 
 				0.02, 
-				Drivetrain.kMaxSpeed * 0.6, 
+				maxSpeed, 
 				Drivetrain.kMaxAccel, 
 				Drivetrain.kMaxJerk);
 
@@ -58,10 +54,30 @@ public class FollowPath extends Command {
 		left = new DistanceFollower(modifier.getLeftTrajectory());
 		right = new DistanceFollower(modifier.getRightTrajectory());
 
-		drive = Robot.drivetrain;
-		File myFile = new File("/home/lvuser/pathfinder/90via45.csv");
+		File myFile = new File("/home/lvuser/pathfinder/" + fileName + ".csv");
 		Pathfinder.writeToCSV(myFile, trajectory);
 
+	}
+	
+	public FollowPath(Waypoint[] points, String fileName) {
+		this(points, Drivetrain.kMaxSpeed, fileName);
+	}
+	
+	public FollowPath(Waypoint[] points) {
+		this(points, "FollowPath");
+	}
+
+	public FollowPath() {
+		this(points());
+	}
+
+	private static Waypoint[] points() {
+		Waypoint[] points = new Waypoint[] {
+				new Waypoint(0, 0, 0),
+				new Waypoint(72, 24, Pathfinder.d2r(45))	// Convert radians to degrees: Pathfinder.d2r(45)
+		};
+
+		return points;
 	}
 
 	protected void initialize() {
@@ -76,7 +92,7 @@ public class FollowPath extends Command {
 		m_prefs.putDouble("Pathfinder/kAngleP", kAngleP);
 		kAngleD = m_prefs.getDouble("Pathfinder/kAngleD", 0.0);
 		m_prefs.putDouble("Pathfinder/kAngleD", kAngleD);
-		
+
 		// The first argument is the proportional gain. Usually this will be quite high
 		// The second argument is the integral gain. This is unused for motion profiling
 		// The third argument is the derivative gain. Tweak this if you are unhappy with the tracking of the trajectory
@@ -85,7 +101,7 @@ public class FollowPath extends Command {
 		// The fifth argument is your acceleration gain. Tweak this if you want to get to a higher or lower speed quicker
 		left.configurePIDVA(kP, kI, kD, kF, kA);
 		right.configurePIDVA(kP, kI, kD, kF, kA);
-		
+
 		drive.resetSensors();
 		left.reset();
 		right.reset();
@@ -105,7 +121,7 @@ public class FollowPath extends Command {
 		SmartDashboard.putNumber("Pathfinder/angleError", m_angleError);
 		SmartDashboard.putNumber("Pathfinder/angleErrorChange", angleErrorChange);
 
-//		System.out.println("Pathfinder at " + m_timer.get() + ", output: " + leftMotorOutput);
+		//		System.out.println("Pathfinder at " + m_timer.get() + ", output: " + leftMotorOutput);
 		drive.boostedTankDrive(leftMotorOutput - (kAngleP * m_angleError - kAngleD * angleErrorChange), 
 				rightMotorOutput + (kAngleP * m_angleError - kAngleD * angleErrorChange));
 	}
