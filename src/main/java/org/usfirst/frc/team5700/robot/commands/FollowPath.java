@@ -49,7 +49,7 @@ public class FollowPath extends Command {
 				Drivetrain.kMaxAccel, 
 				Drivetrain.kMaxJerk);
 
-		trajectory = Pathfinder.generate(waypoints.points, config);
+		trajectory = Pathfinder.generate(waypoints.points(), config);
 		modifier = new TankModifier(trajectory).modify(Drivetrain.kWheelBaseWidth);
 
 		left = new DistanceFollower(modifier.getLeftTrajectory());
