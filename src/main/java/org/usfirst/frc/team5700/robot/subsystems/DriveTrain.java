@@ -22,7 +22,7 @@ public class Drivetrain extends Subsystem {
 	//Encoder specs: S4T-360-250-S-D (usdigital.com)
 	//S4T Shaft Encoder, 360 CPR, 1/4" Dia Shaft, Single-Ended, Default Torque
 	//Encoder Distance Constants
-	public final static double kWheelBaseWidth = 24; //TOOD find
+	public final static double kWheelBaseWidth = 24; //TODO find
 	public final static double kWheelDiameter = 6;
 	public final static double kPulsePerRevolution = 360;
 	public final static double kDistancePerPulse = Math.PI * kWheelDiameter / kPulsePerRevolution;
