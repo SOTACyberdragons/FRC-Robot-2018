@@ -87,7 +87,7 @@ public class Robot extends IterativeRobot {
 	private static Command centerToLeftSwitchAuto;
 	
 	private static void initPathCommands() {
-		double maxSpeed = Drivetrain.kMaxSpeed * 0.4;
+		double maxSpeed = Drivetrain.kMaxSpeed * 0.6;
 		centerToRightSwitchAuto = new FollowPath(CenterToRightSwitch.points(), maxSpeed, "CenterToRightSwitch");
 		centerToLeftSwitchAuto = new FollowPath(CenterToLeftSwitch.points(), maxSpeed, "CenterToLeftSwitch");
 	}
@@ -100,7 +100,6 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 
 		prefs = Preferences.getInstance();
-		initPathCommands();
 		
 //		// Initialize all subsystems
 		drivetrain = new Drivetrain();
@@ -114,7 +113,7 @@ public class Robot extends IterativeRobot {
 		@SuppressWarnings("unused")
 		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
-
+		initPathCommands();
 		SmartDashboard.putData("Center To Right Switch", centerToRightSwitchAuto);
 		SmartDashboard.putData("Center To Left Switch", centerToLeftSwitchAuto);
 		

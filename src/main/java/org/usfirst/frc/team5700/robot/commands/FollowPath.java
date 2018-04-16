@@ -27,7 +27,7 @@ public class FollowPath extends Command {
 	private TankModifier modifier;
 	private DistanceFollower left;
 	private DistanceFollower right;
-	private Drivetrain drive;
+	private Drivetrain m_drive;
 	private Preferences m_prefs;
 	private Timer m_timer;
 	private double m_angleError;
@@ -39,7 +39,7 @@ public class FollowPath extends Command {
 
 		m_timer = new Timer();
 		m_prefs = Robot.prefs;
-		drive = Robot.drivetrain;
+		m_drive = Robot.drivetrain;
 
 		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
 				Trajectory.Config.SAMPLES_HIGH, 
@@ -81,7 +81,7 @@ public class FollowPath extends Command {
 	}
 
 	protected void initialize() {
-		drive.resetSensors();
+		m_drive.resetSensors();
 		m_timer.reset();
 		m_timer.start();
 		kP = m_prefs.getDouble("Pathfinder/kP", 0.45);
@@ -102,16 +102,16 @@ public class FollowPath extends Command {
 		left.configurePIDVA(kP, kI, kD, kF, kA);
 		right.configurePIDVA(kP, kI, kD, kF, kA);
 
-		drive.resetSensors();
+		m_drive.resetSensors();
 		left.reset();
 		right.reset();
 	}
 
 	protected void execute() {
-		double leftMotorOutput = left.calculate(drive.getLeftEncoder().getDistance());
-		double rightMotorOutput = right.calculate(drive.getRightEncoder().getDistance());
+		double leftMotorOutput = left.calculate(m_drive.getLeftEncoder().getDistance());
+		double rightMotorOutput = right.calculate(m_drive.getRightEncoder().getDistance());
 
-		double gyroHeading = - drive.getHeading();    // gyro is clockwise, pathfinder counter-clockwise
+		double gyroHeading = - m_drive.getHeading();    // gyro is clockwise, pathfinder counter-clockwise
 		double desiredHeading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
 		SmartDashboard.putNumber("Pathfinder/desiredHeading", desiredHeading);
 
@@ -122,7 +122,7 @@ public class FollowPath extends Command {
 		SmartDashboard.putNumber("Pathfinder/angleErrorChange", angleErrorChange);
 
 		//		System.out.println("Pathfinder at " + m_timer.get() + ", output: " + leftMotorOutput);
-		drive.boostedTankDrive(leftMotorOutput - (kAngleP * m_angleError - kAngleD * angleErrorChange), 
+		m_drive.boostedTankDrive(leftMotorOutput - (kAngleP * m_angleError - kAngleD * angleErrorChange), 
 				rightMotorOutput + (kAngleP * m_angleError - kAngleD * angleErrorChange));
 	}
 
