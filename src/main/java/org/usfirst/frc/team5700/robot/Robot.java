@@ -14,8 +14,7 @@ import org.usfirst.frc.team5700.robot.commands.AutoLeftSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.AutoRightSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.DriveReplay;
 import org.usfirst.frc.team5700.robot.commands.FollowPath;
-import org.usfirst.frc.team5700.robot.paths.CenterToLeftSwitch;
-import org.usfirst.frc.team5700.robot.paths.CenterToRightSwitch;
+import org.usfirst.frc.team5700.robot.path.Waypoints.*;
 import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
@@ -88,8 +87,8 @@ public class Robot extends IterativeRobot {
 	
 	private static void initPathCommands() {
 		double maxSpeed = Drivetrain.kMaxSpeed * 0.6;
-		centerToRightSwitchAuto = new FollowPath(CenterToRightSwitch.points(), maxSpeed, "CenterToRightSwitch");
-		centerToLeftSwitchAuto = new FollowPath(CenterToLeftSwitch.points(), maxSpeed, "CenterToLeftSwitch");
+		centerToRightSwitchAuto = new FollowPath(new CenterToRightSwitch(), maxSpeed);
+		centerToLeftSwitchAuto = new FollowPath(new CenterToLeftSwitch(), maxSpeed);
 	}
 
 	/**
@@ -102,6 +101,7 @@ public class Robot extends IterativeRobot {
 		prefs = Preferences.getInstance();
 		
 //		// Initialize all subsystems
+		//TODO: uncomment on competition robot
 		drivetrain = new Drivetrain();
 ////		intake = new Intake();
 ////		elevator = new Elevator();
@@ -250,8 +250,7 @@ public class Robot extends IterativeRobot {
          		System.out.print("Starting default command");
          		autoCommand = new AutoCrossBaseline();
          }
-         
-         //autoCommand = new DriveReplay();
+
          autoCommand.start();
 	}
 
