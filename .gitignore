@@ -13,3 +13,5 @@
 *.class
 *.jar
 /.gradle/
+.project
+.classpath
