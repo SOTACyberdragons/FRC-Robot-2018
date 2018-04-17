@@ -23,7 +23,7 @@ public class Arm extends Subsystem {
 
 	//Constants
 	public final double reductionToEncoder = 114.55; 
-	public final double ticksPerDeg = (Constants.VersaEncoderTPR * reductionToEncoder) / 360;
+	public final double ticksPerDeg = (Constants.VERSA_ENCODER_TPR * reductionToEncoder) / 360;
 	public final double encoderMaxSpeed = 33000; //ticks per 100 ms
 	public double wCubeMaxNominalOutput; //Maximum nominal output, when arm is horizontal to ground
 	public double noCubeMaxNominalOutput;
@@ -40,30 +40,30 @@ public class Arm extends Subsystem {
 		
 		_talon = new TalonSRX(2);
 		/* first choose the sensor */
-		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
 		_talon.setSensorPhase(true);
 		_talon.setInverted(true);
 	
 		/* Set relevant frame periods to be at least as fast as periodic rate */
-		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
+		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TIMEOUT_MS);
+		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TIMEOUT_MS);
 	
 		/* set the peak and nominal outputs */
-		_talon.configNominalOutputForward(0, Constants.kTimeoutMs);
-		_talon.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		_talon.configPeakOutputForward(1, Constants.kTimeoutMs);
-		_talon.configPeakOutputReverse(-1, Constants.kTimeoutMs);
+		_talon.configNominalOutputForward(0, Constants.TIMEOUT_MS);
+		_talon.configNominalOutputReverse(0, Constants.TIMEOUT_MS);
+		_talon.configPeakOutputForward(1, Constants.TIMEOUT_MS);
+		_talon.configPeakOutputReverse(-1, Constants.TIMEOUT_MS);
 	
 		/* set closed loop gains in slot 0 - see documentation */
 		_talon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-		_talon.config_kF(0, Constants.TalonMaxOutput/encoderMaxSpeed, Constants.kTimeoutMs);
-		_talon.config_kP(0, 0.1, Constants.kTimeoutMs);
-		_talon.config_kI(0, 0, Constants.kTimeoutMs);
-		_talon.config_kD(0, 0, Constants.kTimeoutMs);
+		_talon.config_kF(0, Constants.TALON_MAX_OUTPUT/encoderMaxSpeed, Constants.TIMEOUT_MS);
+		_talon.config_kP(0, 0.1, Constants.TIMEOUT_MS);
+		_talon.config_kI(0, 0, Constants.TIMEOUT_MS);
+		_talon.config_kD(0, 0, Constants.TIMEOUT_MS);
 		
 		/* set acceleration and cruise velocity - see documentation */
-		_talon.configMotionCruiseVelocity(25000 , Constants.kTimeoutMs);
-		_talon.configMotionAcceleration(30000, Constants.kTimeoutMs);
+		_talon.configMotionCruiseVelocity(25000 , Constants.TIMEOUT_MS);
+		_talon.configMotionAcceleration(30000, Constants.TIMEOUT_MS);
 	}
 	
 	public void moveArmWithJoystick(double stickValue) {
@@ -80,7 +80,7 @@ public class Arm extends Subsystem {
 	}
 	
 	public void zeroEncoder() {
-		_talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+		_talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
 	}
 	
 	public double getRawEncoderTicks() {

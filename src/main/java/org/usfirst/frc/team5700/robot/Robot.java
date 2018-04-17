@@ -86,7 +86,7 @@ public class Robot extends IterativeRobot {
 	private static Command centerToLeftSwitchAuto;
 	
 	private static void initPathCommands() {
-		double maxSpeed = Drivetrain.kMaxSpeed * 0.6;
+		double maxSpeed = Drivetrain.MAX_SPEED * 0.6;
 		centerToRightSwitchAuto = new FollowPath(new CenterToRightSwitch(), maxSpeed);
 		centerToLeftSwitchAuto = new FollowPath(new CenterToLeftSwitch(), maxSpeed);
 	}

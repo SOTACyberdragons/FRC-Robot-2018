@@ -22,13 +22,13 @@ public class Drivetrain extends Subsystem {
 	//Encoder specs: S4T-360-250-S-D (usdigital.com)
 	//S4T Shaft Encoder, 360 CPR, 1/4" Dia Shaft, Single-Ended, Default Torque
 	//Encoder Distance Constants
-	public final static double kWheelBaseWidth = 24; //TODO find
+	public final static double WHEELBASE_WIDTH = 24; //TODO find
 	public final static double kWheelDiameter = 6;
 	public final static double kPulsePerRevolution = 360;
 	public final static double kDistancePerPulse = Math.PI * kWheelDiameter / kPulsePerRevolution;
-	public final static double kMaxSpeed = 110.0;
-	public static final double kMaxAccel = 1.0 / 0.0254; //0.2g in in/s^2
-	public static final double kMaxJerk = 30 / 0.0254; //from example code in Pathfinder
+	public final static double MAX_SPEED = 110.0;
+	public static final double MAX_ACCEL = 1.0 / 0.0254; //0.2g in in/s^2
+	public static final double MAX_JERK = 30 / 0.0254; //from example code in Pathfinder
 
 	//motors and drive
 	private SpeedController m_leftMotor;

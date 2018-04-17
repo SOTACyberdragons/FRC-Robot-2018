@@ -63,34 +63,34 @@ public class Elevator extends Subsystem {
 		talon.setName("Elevator", "Talon");
 
 		/* first choose the sensor */
-		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
 		talon.setSensorPhase(false);
 		talon.setInverted(false);
 
 		//set talon max output
-		talon.configNominalOutputForward(1, Constants.kTimeoutMs);
-		talon.configNominalOutputReverse(-1, Constants.kTimeoutMs);
+		talon.configNominalOutputForward(1, Constants.TIMEOUT_MS);
+		talon.configNominalOutputReverse(-1, Constants.TIMEOUT_MS);
 
 		/* Set relevant frame periods to be at least as fast as periodic rate */
-		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.kTimeoutMs);
-		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.kTimeoutMs);
+		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TIMEOUT_MS);
+		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TIMEOUT_MS);
 
 		/* set the peak and nominal outputs */
-		talon.configNominalOutputForward(0, Constants.kTimeoutMs);
-		talon.configNominalOutputReverse(0, Constants.kTimeoutMs);
-		talon.configPeakOutputForward(1, Constants.kTimeoutMs);
-		talon.configPeakOutputReverse(-1, Constants.kTimeoutMs);
+		talon.configNominalOutputForward(0, Constants.TIMEOUT_MS);
+		talon.configNominalOutputReverse(0, Constants.TIMEOUT_MS);
+		talon.configPeakOutputForward(1, Constants.TIMEOUT_MS);
+		talon.configPeakOutputReverse(-1, Constants.TIMEOUT_MS);
 
 		/* set closed loop gains in slot 0 - see documentation */
 		talon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
-		talon.config_kF(0, Constants.TalonMaxOutput * 1.0/encoderMaxSpeed, Constants.kTimeoutMs);
-		talon.config_kP(0, 0.33, Constants.kTimeoutMs);
-		talon.config_kI(0, 0.001, Constants.kTimeoutMs);
-		talon.config_kD(0, 0.13511, Constants.kTimeoutMs);
+		talon.config_kF(0, Constants.TALON_MAX_OUTPUT * 1.0/encoderMaxSpeed, Constants.TIMEOUT_MS);
+		talon.config_kP(0, 0.33, Constants.TIMEOUT_MS);
+		talon.config_kI(0, 0.001, Constants.TIMEOUT_MS);
+		talon.config_kD(0, 0.13511, Constants.TIMEOUT_MS);
 
 		/* set acceleration and cruise velocity - see documentation */
-		talon.configMotionCruiseVelocity(16000, Constants.kTimeoutMs);
-		talon.configMotionAcceleration(16000, Constants.kTimeoutMs);
+		talon.configMotionCruiseVelocity(16000, Constants.TIMEOUT_MS);
+		talon.configMotionAcceleration(16000, Constants.TIMEOUT_MS);
 
 		//Feed Forward Values
 		lowNoCubeFF = prefs.getDouble("lowNoCubeFF", -0.01);
@@ -134,7 +134,7 @@ public class Elevator extends Subsystem {
 	}
 
 	public void zeroEncoder() {
-		talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.kTimeoutMs);
+		talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
 		System.out.println("You just zeroed the elevator.");
 	}
 

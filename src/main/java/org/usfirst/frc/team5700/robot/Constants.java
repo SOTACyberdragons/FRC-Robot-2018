@@ -19,19 +19,18 @@ public class Constants {
 	 * set to zero to skip waiting for confirmation, set to nonzero to wait and
 	 * report to DS if action fails.
 	 */
-	public static final int kTimeoutMs = 10;
+	public static final int TIMEOUT_MS = 10;
 
 	/**
 	 * Talon
 	 */
-	public static final int TalonMaxOutput = 1023;
-	public static final int VersaEncoderTPR = 4096;
+	public static final int TALON_MAX_OUTPUT = 1023;
+	public static final int VERSA_ENCODER_TPR = 4096;
 	
 	/**
 	 * Roborio
-	 */
-	
+	 */	
 	public static final double CYCLE_SEC = 0.020; //20 milliseconds
-	
 	public static final String DATA_DIR = "/home/lvuser/data_capture/";
+	public static final String PATHFINDER_DIR = "/home/lvuser/pathfinder/";
 }

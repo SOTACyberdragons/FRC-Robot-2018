@@ -2,6 +2,7 @@ package org.usfirst.frc.team5700.robot.commands;
 
 import java.io.File;
 
+import org.usfirst.frc.team5700.robot.Constants;
 import org.usfirst.frc.team5700.robot.Robot;
 import org.usfirst.frc.team5700.robot.path.Waypoints;
 import org.usfirst.frc.team5700.robot.subsystems.Drivetrain;
@@ -17,11 +18,10 @@ import jaci.pathfinder.modifiers.TankModifier;
 
 public class FollowPath extends Command {
 
-	private static final String dir = "/home/lvuser/pathfinder/";
 	private static double kP;
 	private static double kI;
 	private static double kD;
-	private static double kF = 1 / Drivetrain.kMaxSpeed;
+	private static double kF = 1 / Drivetrain.MAX_SPEED;
 	private static double kA = 0;
 	private static double kAngleP;
 	private static double kAngleD;
@@ -46,16 +46,16 @@ public class FollowPath extends Command {
 				Trajectory.Config.SAMPLES_HIGH, 
 				0.02, 
 				maxSpeed, 
-				Drivetrain.kMaxAccel, 
-				Drivetrain.kMaxJerk);
+				Drivetrain.MAX_ACCEL, 
+				Drivetrain.MAX_JERK);
 
 		trajectory = Pathfinder.generate(waypoints.points(), config);
-		modifier = new TankModifier(trajectory).modify(Drivetrain.kWheelBaseWidth);
+		modifier = new TankModifier(trajectory).modify(Drivetrain.WHEELBASE_WIDTH);
 
 		left = new DistanceFollower(modifier.getLeftTrajectory());
 		right = new DistanceFollower(modifier.getRightTrajectory());
 
-		File trajectoryCsv = new File(dir + waypoints.getClass().getSimpleName() + ".csv");
+		File trajectoryCsv = new File(Constants.PATHFINDER_DIR + waypoints.getClass().getSimpleName() + ".csv");
 		Pathfinder.writeToCSV(trajectoryCsv, trajectory);
 
 	}
