@@ -63,7 +63,7 @@ public class Elevator extends Subsystem {
 		talon.setName("Elevator", "Talon");
 
 		/* first choose the sensor */
-		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
+		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 		talon.setSensorPhase(false);
 		talon.setInverted(false);
 
@@ -82,7 +82,7 @@ public class Elevator extends Subsystem {
 		talon.configPeakOutputReverse(-1, Constants.TIMEOUT_MS);
 
 		/* set closed loop gains in slot 0 - see documentation */
-		talon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+		talon.selectProfileSlot(Constants.SLOT_IDX, Constants.PID_LOOP_IDX);
 		talon.config_kF(0, Constants.TALON_MAX_OUTPUT * 1.0/encoderMaxSpeed, Constants.TIMEOUT_MS);
 		talon.config_kP(0, 0.33, Constants.TIMEOUT_MS);
 		talon.config_kI(0, 0.001, Constants.TIMEOUT_MS);
@@ -134,7 +134,7 @@ public class Elevator extends Subsystem {
 	}
 
 	public void zeroEncoder() {
-		talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
+		talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 		System.out.println("You just zeroed the elevator.");
 	}
 
@@ -186,7 +186,7 @@ public class Elevator extends Subsystem {
 
 		/* append more signals to print when in speed mode. */
 		sb.append(" err:");
-		sb.append(talon.getClosedLoopError(Constants.kPIDLoopIdx));
+		sb.append(talon.getClosedLoopError(Constants.PID_LOOP_IDX));
 		sb.append(" trg:");
 		sb.append(heightIn);
 

@@ -23,8 +23,8 @@ public class FollowPath extends Command {
 	private static double kD;
 	private static double kF = 1 / Drivetrain.MAX_SPEED;
 	private static double kA = 0;
-	private static double kAngleP;
-	private static double kAngleD;
+	private static double angleKP;
+	private static double angleKD;
 	
 	private Trajectory trajectory;
 	private TankModifier modifier;
@@ -44,7 +44,7 @@ public class FollowPath extends Command {
 
 		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
 				Trajectory.Config.SAMPLES_HIGH, 
-				0.02, 
+				Constants.CYCLE_SEC, 
 				maxSpeed, 
 				Drivetrain.MAX_ACCEL, 
 				Drivetrain.MAX_JERK);
@@ -68,10 +68,10 @@ public class FollowPath extends Command {
 		prefs.putDouble("Pathfinder/kP", kP);
 		kD = prefs.getDouble("Pathfinder/kD", 0.01);
 		prefs.putDouble("Pathfinder/kD", kD);
-		kAngleP = prefs.getDouble("Pathfinder/kAngleP", 0.05);
-		prefs.putDouble("Pathfinder/kAngleP", kAngleP);
-		kAngleD = prefs.getDouble("Pathfinder/kAngleD", 0.0);
-		prefs.putDouble("Pathfinder/kAngleD", kAngleD);
+		angleKP = prefs.getDouble("Pathfinder/angleKP", 0.05);
+		prefs.putDouble("Pathfinder/angleKP", angleKP);
+		angleKD = prefs.getDouble("Pathfinder/angleKD", 0.0);
+		prefs.putDouble("Pathfinder/angleKD", angleKD);
 
 		// The first argument is the proportional gain. Usually this will be quite high
 		// The second argument is the integral gain. This is unused for motion profiling
@@ -102,8 +102,8 @@ public class FollowPath extends Command {
 		SmartDashboard.putNumber("Pathfinder/angleErrorChange", angleErrorChange);
 
 		//		System.out.println("Pathfinder at " + timer.get() + ", output: " + leftMotorOutput);
-		drive.boostedTankDrive(leftMotorOutput - (kAngleP * angleError - kAngleD * angleErrorChange), 
-				rightMotorOutput + (kAngleP * angleError - kAngleD * angleErrorChange));
+		drive.boostedTankDrive(leftMotorOutput - (angleKP * angleError - angleKD * angleErrorChange), 
+				rightMotorOutput + (angleKP * angleError - angleKD * angleErrorChange));
 	}
 
 	protected boolean isFinished() {

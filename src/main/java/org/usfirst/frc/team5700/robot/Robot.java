@@ -100,16 +100,19 @@ public class Robot extends IterativeRobot {
 
 		prefs = Preferences.getInstance();
 		
-//		// Initialize all subsystems
-		//TODO: uncomment on competition robot
+		// Initialize all subsystems
 		drivetrain = new Drivetrain();
-////		intake = new Intake();
-////		elevator = new Elevator();
+		
+		//TODO: uncomment on competition robot
+//		intake = new Intake();
+//		elevator = new Elevator();
 //		climber = new Climber();
-////		arm = new Arm();
+//		arm = new Arm();
 //		grabber = new Grabber();
-////		assistSystem = new AssistSystem();
+//		assistSystem = new AssistSystem();
+		
 		oi = new OI();
+		
 		@SuppressWarnings("unused")
 		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
@@ -210,8 +213,6 @@ public class Robot extends IterativeRobot {
          		break;
          	case "Cross Baseline":
          		autoCommand = new AutoCrossBaseline();
-         		System.out.print("Starting Cross Baseline command");
-         		//autoCommand = new AutoRightSideSwitch();
          		break;
          	case "Center Switch":
          		if (switchOnRight) {

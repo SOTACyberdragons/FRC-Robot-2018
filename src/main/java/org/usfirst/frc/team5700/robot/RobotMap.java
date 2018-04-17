@@ -8,8 +8,8 @@ package org.usfirst.frc.team5700.robot;
  */
 public class RobotMap {
 	//PWM
-	public static final int kLeftDriveMotor = 0;
-	public static final int kRightDriveMotor = 1;
+	public static final int LEFT_DRIVE_MOTOR = 0;
+	public static final int RIGHT_DRIVE_MOTOR = 1;
 	public static final int INTAKE_MOTORS = 2;
 	public static final int CLIMBER_MOTOR = 6;
 	
@@ -28,17 +28,17 @@ public class RobotMap {
 	//Sensors (DIO)0;
 	//TODO make sure these are corrected
 	//competition robot
-//	public static final int LeftEncoderAChannel = 4;
-//	public static final int LeftEncoderBChannel = 5;
-//	public static final int RightEncoderAChannel = 6;
-//	public static final int RightEncoderBChannel = 7;
-	public static final int FrontBreakBeamChannel = 8;
-	public static final int BackBreakBeamChannel = 9;
+//	public static final int LEFT_ENCODER_A_CHANNEL = 4;
+//	public static final int LEFT_ENCODER_B_CHANNEL = 5;
+//	public static final int RIGHT_ENCODER_A_CHANNEL = 6;
+//	public static final int RIGHT_ENCODER_B_CHANNEL = 7;
+	public static final int FRONT_BREAK_BEAM_CHANNEL = 8;
+	public static final int BACK_BREAK_BEAM_CHANNEL = 9;
 	
 	//practice robot
-	public static final int LeftEncoderAChannel = 0;
-	public static final int LeftEncoderBChannel = 1;
-	public static final int RightEncoderAChannel = 3;
-	public static final int RightEncoderBChannel = 4;
+	public static final int LEFT_ENCODER_A_CHANNEL = 0;
+	public static final int LEFT_ENCODER_B_CHANNEL = 1;
+	public static final int RIGHT_ENCODER_A_CHANNEL = 3;
+	public static final int RIGHT_ENCODER_B_CHANNEL = 4;
 
 }

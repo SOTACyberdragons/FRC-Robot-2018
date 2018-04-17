@@ -25,8 +25,8 @@ public class DrivetrainOld extends Subsystem {
 
 	public static double maxSideAccel;
 
-	private SpeedController leftMotor = new Spark(RobotMap.kLeftDriveMotor);
-	private SpeedController rightMotor = new Spark(RobotMap.kRightDriveMotor);
+	private SpeedController leftMotor = new Spark(RobotMap.LEFT_DRIVE_MOTOR);
+	private SpeedController rightMotor = new Spark(RobotMap.RIGHT_DRIVE_MOTOR);
 
 	public RobotDrive drive = new RobotDrive(leftMotor, rightMotor);
 	private BuiltInAccelerometer accel = new BuiltInAccelerometer();
@@ -41,8 +41,8 @@ public class DrivetrainOld extends Subsystem {
 	public final static double WHEEL_DIAMETER = 6;
 	public final static double PULSE_PER_REVOLUTION = 360;
 
-	private Encoder leftEncoder = new Encoder(RobotMap.LeftEncoderAChannel, RobotMap.LeftEncoderBChannel, false);
-	private Encoder rightEncoder = new Encoder(RobotMap.RightEncoderAChannel, RobotMap.RightEncoderBChannel, true);
+	private Encoder leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_A_CHANNEL, RobotMap.LEFT_ENCODER_B_CHANNEL, false);
+	private Encoder rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_A_CHANNEL, RobotMap.RIGHT_ENCODER_B_CHANNEL, true);
 
 	Preferences prefs = Preferences.getInstance();
 

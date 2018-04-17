@@ -40,7 +40,7 @@ public class Arm extends Subsystem {
 		
 		_talon = new TalonSRX(2);
 		/* first choose the sensor */
-		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
+		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 		_talon.setSensorPhase(true);
 		_talon.setInverted(true);
 	
@@ -55,7 +55,7 @@ public class Arm extends Subsystem {
 		_talon.configPeakOutputReverse(-1, Constants.TIMEOUT_MS);
 	
 		/* set closed loop gains in slot 0 - see documentation */
-		_talon.selectProfileSlot(Constants.kSlotIdx, Constants.kPIDLoopIdx);
+		_talon.selectProfileSlot(Constants.SLOT_IDX, Constants.PID_LOOP_IDX);
 		_talon.config_kF(0, Constants.TALON_MAX_OUTPUT/encoderMaxSpeed, Constants.TIMEOUT_MS);
 		_talon.config_kP(0, 0.1, Constants.TIMEOUT_MS);
 		_talon.config_kI(0, 0, Constants.TIMEOUT_MS);
@@ -80,7 +80,7 @@ public class Arm extends Subsystem {
 	}
 	
 	public void zeroEncoder() {
-		_talon.setSelectedSensorPosition(0, Constants.kPIDLoopIdx, Constants.TIMEOUT_MS);
+		_talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 	}
 	
 	public double getRawEncoderTicks() {

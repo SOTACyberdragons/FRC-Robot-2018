@@ -19,8 +19,8 @@ public class Intake extends Subsystem {
 	private double intakeSpeed = -0.65; //TODO number
 	
 	private boolean inVaultMode = false;
-	public DigitalInput frontBreakBeam = new DigitalInput(RobotMap.FrontBreakBeamChannel);
-	public DigitalInput backBreakBeam = new DigitalInput(RobotMap.BackBreakBeamChannel);
+	public DigitalInput frontBreakBeam = new DigitalInput(RobotMap.FRONT_BREAK_BEAM_CHANNEL);
+	public DigitalInput backBreakBeam = new DigitalInput(RobotMap.BACK_BREAK_BEAM_CHANNEL);
 	private boolean vaultButtonBeenPressed = false; 
 	
     public Intake() {
