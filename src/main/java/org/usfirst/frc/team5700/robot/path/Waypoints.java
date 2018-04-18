@@ -17,12 +17,49 @@ public interface Waypoints {
 		}
 
 	}
+
 	public final class CenterToRightSwitch implements Waypoints {
 		public Waypoint[] points() {
 			return  new Waypoint[] {
 					new Waypoint(0, 0, 0),
 					new Waypoint(70, -26, Pathfinder.d2r(-23)),	// Convert radians to degrees: Pathfinder.d2r(45)
 					new Waypoint(97, -49, Pathfinder.d2r(-81))
+			};
+		}
+	}
+
+	//TODO find points
+	public final class RightSideScale implements Waypoints {
+		public Waypoint[] points() {
+			return  new Waypoint[] {
+					new Waypoint(0, 0, 0)
+			};
+		}
+	}
+
+	//TODO find points
+	public final class LeftSideScale implements Waypoints {
+		public Waypoint[] points() {
+			return  new Waypoint[] {
+					new Waypoint(0, 0, 0)
+			};
+		}
+	}
+
+	//TODO find points
+	public final class RightSideSwitch implements Waypoints {
+		public Waypoint[] points() {
+			return  new Waypoint[] {
+					new Waypoint(0, 0, 0)
+			};
+		}
+	}
+
+	//TODO find points
+	public final class LeftSideSwitch implements Waypoints {
+		public Waypoint[] points() {
+			return  new Waypoint[] {
+					new Waypoint(0, 0, 0)
 			};
 		}
 	}

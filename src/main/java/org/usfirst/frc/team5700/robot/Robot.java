@@ -7,14 +7,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 
+import org.usfirst.frc.team5700.robot.Constants.AutoChoice;
+import org.usfirst.frc.team5700.robot.Constants.Side;
+import org.usfirst.frc.team5700.robot.Constants.StartPosition;
+import org.usfirst.frc.team5700.robot.commands.AutoCenterSwitch;
 import org.usfirst.frc.team5700.robot.commands.AutoCrossBaseline;
+import org.usfirst.frc.team5700.robot.commands.AutoCrossBaselineCenter;
 import org.usfirst.frc.team5700.robot.commands.AutoDoNotMove;
-import org.usfirst.frc.team5700.robot.commands.AutoLeftSideScale;
-import org.usfirst.frc.team5700.robot.commands.AutoLeftSideSwitch;
-import org.usfirst.frc.team5700.robot.commands.AutoRightSideSwitch;
+import org.usfirst.frc.team5700.robot.commands.AutoSideScale;
+import org.usfirst.frc.team5700.robot.commands.AutoSideSwitch;
 import org.usfirst.frc.team5700.robot.commands.DriveReplay;
-import org.usfirst.frc.team5700.robot.commands.FollowPath;
-import org.usfirst.frc.team5700.robot.path.Waypoints.*;
 import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
@@ -43,11 +45,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	private String autoSelected;
+	private AutoChoice autoChoice;
 	private Command autoCommand;
 	public static Preferences prefs;
 
-	SendableChooser<String> chooser;
+	SendableChooser<AutoChoice> chooser;
 
 
 	public static OI oi;
@@ -59,8 +61,6 @@ public class Robot extends IterativeRobot {
 	public static Grabber grabber;
 	public static AssistSystem assistSystem;
 	
-	public static boolean switchOnRight;
-	public static boolean scaleOnRight;
 	public static boolean dropCube = false;
 	
 	String[] data_fields ={
@@ -77,19 +77,54 @@ public class Robot extends IterativeRobot {
 			"headingError",
 			"moveArmTo90"
 	};
+	
 	private SendableChooser<String> recordModeChooser;
 	private static String recordMode;
 	private SendableChooser<String> replayChooser;
 	
+	
+	/*Auto Commands*/
+	//Baseline
+	private static Command autoCrossBaselineCenter;
+	private static Command autoCrossBaseline;
+	
+	//Center
+	private static Command autoCenterToRightSwitch;
+	private static Command autoCenterToLeftSwitch;
+	
+	//Right Side
+	private static Command autoRightSideSwitch;
+	private static Command autoRightSideScale;
+	
+	//Left Side
+	private static Command autoLeftSideScale;
+	private static Command autoLeftSideSwitch;
+	
+	
 	public static CsvLogger csvLogger;
-	private static Command centerToRightSwitchAuto;
-	private static Command centerToLeftSwitchAuto;
 	
 	private static void initPathCommands() {
-		double maxSpeed = Drivetrain.MAX_SPEED * 0.6;
-		centerToRightSwitchAuto = new FollowPath(new CenterToRightSwitch(), maxSpeed);
-		centerToLeftSwitchAuto = new FollowPath(new CenterToLeftSwitch(), maxSpeed);
+		//Baseline
+		autoCrossBaselineCenter = new AutoCrossBaselineCenter();
+		autoCrossBaseline = new AutoCrossBaseline();
+		
+		//Center
+		autoCenterToRightSwitch = new AutoCenterSwitch(Side.RIGHT);
+		autoCenterToLeftSwitch = new AutoCenterSwitch(Side.LEFT);
+		
+		//Right Side
+		autoRightSideSwitch = new AutoSideSwitch(Side.RIGHT);
+		autoRightSideScale = new AutoSideScale(Side.RIGHT);
+		
+		//Left Side
+		autoLeftSideScale = new AutoSideSwitch(Side.LEFT);
+		autoLeftSideScale = new AutoSideScale(Side.LEFT);
 	}
+	
+	private static Side switchSide;
+	private static Side scaleSide;
+	private static StartPosition startPosition;
+	private static boolean gameDataAvailable;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -117,22 +152,23 @@ public class Robot extends IterativeRobot {
 		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 		initPathCommands();
-		SmartDashboard.putData("Center To Right Switch", centerToRightSwitchAuto);
-		SmartDashboard.putData("Center To Left Switch", centerToLeftSwitchAuto);
+		SmartDashboard.putData("Center To Right Switch", autoCenterToRightSwitch);
+		SmartDashboard.putData("Center To Left Switch", autoCenterToLeftSwitch);
 		
 
 		// Show what command your subsystem is running on the SmartDashboard
 		SmartDashboard.putData(drivetrain);
 		
 		//Autonomous Chooser
-        chooser = new SendableChooser<String>();
- 		chooser.addObject("Dont Move", "Dont Move");
- 		chooser.addDefault("Cross Baseline", "Cross Baseline");
- 		chooser.addObject("Center Switch", "Center Switch");
- 		chooser.addObject("Right Side Switch", "Right Side Switch");
- 		chooser.addObject("Left Side Switch", "Left Side Switch");
-		chooser.addObject("Replay Test", "Replay Test");
-		chooser.addObject("Left Side Switch or Scale", "Left Side Switch or Scale");
+        chooser = new SendableChooser<AutoChoice>();
+ 		chooser.addObject("Dont Move", AutoChoice.DO_NOT_MOVE);
+ 		chooser.addDefault("Cross Baseline", AutoChoice.CROSS_BASELINE);
+ 		chooser.addObject("Center Switch", AutoChoice.CENTER_SWITCH);
+ 		chooser.addObject("Right Side Switch Priority", AutoChoice.RIGHT_SWITCH_PRIORITY);
+ 		chooser.addObject("Right Side Scale Priority", AutoChoice.RIGHT_SCALE_PRIORITY);
+ 		chooser.addObject("Left Side Switch Priority", AutoChoice.LEFT_SWITCH_PRIORITY);
+ 		chooser.addObject("Left Side Scale Priority", AutoChoice.LEFT_SCALE_PRIORITY);
+		chooser.addObject("Replay Test", AutoChoice.REPLAY_TEST);
  		SmartDashboard.putData("Autonomous Chooser", chooser);
  		
 		setupRecordMode();
@@ -188,67 +224,86 @@ public class Robot extends IterativeRobot {
 		
 		dropCube = false;
 //		grabber.close();
-		autoSelected = chooser.getSelected();
+		autoChoice = chooser.getSelected();
 		
-		boolean switchOnRight = true;
-		boolean scaleOnRight = true;
-		
-		String gameData;
-		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		setGameSide();
         
-		if (gameData.length() > 0) {
-    	 	if(gameData.charAt(0) == 'L') {
-    	 		switchOnRight = false;
-    	 	}
-    	 	if (gameData.charAt(1) == 'L') {
-    	 		scaleOnRight = false;
-    	 	}
-         }
-         
-         switch (autoSelected) {
-         	case "Dont Move":
-         		autoCommand = new AutoDoNotMove();
-         		break;
-         	case "Cross Baseline":
-         		autoCommand = new AutoCrossBaseline();
-         		break;
-         	case "Center Switch":
-         		if (switchOnRight) {
-         			autoCommand = centerToRightSwitchAuto;
-         		} else {
-         			autoCommand = centerToLeftSwitchAuto;
-         		}
-         		break;
-         	case "Right Side Switch":
-         		if (switchOnRight) {
-         			autoCommand = new AutoRightSideSwitch();
-         		} else {
-         			autoCommand = new AutoCrossBaseline();
-         		}
-         		break;
-         	case "Left Side Switch":
-         		if (!switchOnRight) {
-         			autoCommand = new AutoLeftSideSwitch();
-         		} else {
-         			autoCommand = new AutoCrossBaseline();
-         		}
-         		break;
-         	case "Replay Test":
-         		autoCommand = new DriveReplay(replayChooser.getSelected());
-         		break;
-         	case "Left Side Switch or Scale":
-         		if (!scaleOnRight) {
-         				autoCommand = new AutoLeftSideScale();
-         		} else if (!switchOnRight) {
-         			autoCommand = new AutoLeftSideSwitch();
-         		} else {
-         			autoCommand = new AutoCrossBaseline();
-         		}
-         		break;
-         	default:
-         		System.out.print("Starting default command");
-         		autoCommand = new AutoCrossBaseline();
-         }
+		if (autoChoice == AutoChoice.DO_NOT_MOVE) {
+			autoCommand = new AutoDoNotMove();
+			
+		} else if (!gameDataAvailable || autoChoice == AutoChoice.CROSS_BASELINE) {
+			
+			if (startPosition == StartPosition.CENTER) {
+				autoCommand = autoCrossBaselineCenter;
+				
+			} else {
+				autoCommand = autoCrossBaseline;
+			}
+		} else {
+	         switch (autoChoice) {
+	         	case CENTER_SWITCH:
+	         		if (switchSide == Side.RIGHT) {
+	         			autoCommand = autoCenterToRightSwitch;
+	         		} else if (switchSide == Side.LEFT) {
+	         			autoCommand = autoCenterToLeftSwitch;
+	         		} else {
+	         			autoCommand = autoCrossBaselineCenter;
+	         		}
+	         		break;
+	         		
+	         	case RIGHT_SCALE_PRIORITY:
+	         		if (scaleSide == Side.RIGHT) {
+	         			autoCommand = autoRightSideScale;
+	         		} else if (switchSide == Side.RIGHT){
+	         			autoCommand = autoRightSideSwitch;
+	         		} else {
+	         			autoCommand = autoCrossBaseline;
+	         		}
+	         		break;
+	         		
+	         	case RIGHT_SWITCH_PRIORITY:
+	         		if (switchSide == Side.RIGHT){
+	         			autoCommand = autoRightSideSwitch;
+	         		} else if (scaleSide == Side.RIGHT) {
+	         			autoCommand = autoRightSideScale;
+	         		} else {
+	         			autoCommand = autoCrossBaseline;
+	         		}
+	         		break;
+	         		
+	         	case LEFT_SCALE_PRIORITY:
+	         		if (scaleSide == Side.LEFT) {
+	         			autoCommand = autoLeftSideScale;
+	         		} else if (switchSide == Side.LEFT){
+	         			autoCommand = autoLeftSideSwitch;
+	         		} else {
+	         			autoCommand = autoCrossBaseline;
+	         		}
+	         		break;
+	         		
+	         	case LEFT_SWITCH_PRIORITY:
+	         		if (switchSide == Side.LEFT){
+	         			autoCommand = autoLeftSideSwitch;
+	         		} else if (scaleSide == Side.LEFT) {
+	         			autoCommand = autoLeftSideScale;
+	         		} else {
+	         			autoCommand = autoCrossBaseline;
+	         		}
+	         		break;
+	         		
+	         	case REPLAY_TEST:
+	         		autoCommand = new DriveReplay(replayChooser.getSelected());
+	         		break;
+	         		
+	         	default:
+	         		if (startPosition == StartPosition.CENTER) {
+	    				autoCommand = autoCrossBaselineCenter;
+	    				
+	    			} else {
+	    				autoCommand = autoCrossBaseline;
+	    			}
+	         }
+		}
 
          autoCommand.start();
 	}
@@ -345,6 +400,27 @@ public class Robot extends IterativeRobot {
 	
 	public static String recordMode() {
 		return recordMode;
+	}
+	
+	public static void setGameSide() {
+		
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+        
+		if (gameData.length() > 0) {
+			gameDataAvailable = true;
+			
+    	 	if(gameData.charAt(0) == 'L') {
+    	 		switchSide = Side.LEFT;
+    	 	} else {
+    	 		switchSide = Side.RIGHT;
+    	 	}
+    	 	if (gameData.charAt(1) == 'L') {
+    	 		scaleSide = Side.LEFT;
+    	 	} else {
+    	 		scaleSide = Side.RIGHT;
+    	 	}
+         }
 	}
 
 }
