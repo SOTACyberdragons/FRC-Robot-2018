@@ -64,14 +64,14 @@ public class FollowPath extends Command {
 		drive.resetSensors();
 		timer.reset();
 		timer.start();
-		kP = prefs.getDouble("Pathfinder/kP", 0.45);
-		prefs.putDouble("Pathfinder/kP", kP);
-		kD = prefs.getDouble("Pathfinder/kD", 0.01);
-		prefs.putDouble("Pathfinder/kD", kD);
-		angleKP = prefs.getDouble("Pathfinder/angleKP", 0.05);
-		prefs.putDouble("Pathfinder/angleKP", angleKP);
-		angleKD = prefs.getDouble("Pathfinder/angleKD", 0.0);
-		prefs.putDouble("Pathfinder/angleKD", angleKD);
+		kP = prefs.getDouble("Pathfinder.kP", 0.45);
+		prefs.putDouble("Pathfinder.kP", kP);
+		kD = prefs.getDouble("Pathfinder.kD", 0.01);
+		prefs.putDouble("Pathfinder.kD", kD);
+		angleKP = prefs.getDouble("Pathfinder.angleKP", 0.05);
+		prefs.putDouble("Pathfinder.angleKP", angleKP);
+		angleKD = prefs.getDouble("Pathfinder.angleKD", 0.0);
+		prefs.putDouble("Pathfinder.angleKD", angleKD);
 
 		// The first argument is the proportional gain. Usually this will be quite high
 		// The second argument is the integral gain. This is unused for motion profiling
