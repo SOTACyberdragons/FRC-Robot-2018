@@ -117,37 +117,37 @@ public class OI {
 		 * Set Commands
 		 */
 		//box intake
-//		spinIntakeIn.whileHeld(new IntakeSpinIn());
-//		extendIntake.whileHeld(new ExtendIntake());
-//		spitIntakeOut.whileHeld(new IntakeSpitOut());
-//		
-//		//grabber
-//		grabCube.whenPressed(new GrabCube());
-//		releaseCube.whenPressed(new ReleaseCube());
-//		
-//		//climber
-//		climberUp.whileHeld(new ClimberUp());
-//		climberDown.whileHeld(new ClimberDown());
-//		
-//		//arm
-//		moveArmTo90.whileHeld(new MoveArmToAngle(90));
-//		
-//		//elevator
-//		//moveElevatorDistance.whileHeld(new MoveElevatorDistance(30));
-//		
-//		//climber assist
-//		releaseAssist.whileHeld(new ReleaseAssistArm());
-//		
-//		//Lifter Automation Buttons
-//		moveToPickUpPosition.whileHeld(new MoveArmAndElevatorDistance(16.5, 0));
-//		pickupCube.whenPressed(new PickupCube());
-//		moveToCruise.whileHeld(new MoveArmAndElevatorDistance(2, 180, 0.5, 0));
-//		moveElevatorToTop.whileHeld(new MoveElevatorDistance(58));
-//		breakBeamPickup.whileHeld(new BreakBeamPickup());
-//				
-//		//Operations Buttons
-//		zeroElevatorEncoder.whenPressed(new ResetElevatorEncoder());
-//		zeroArmEncoder.whenPressed(new ResetArmEncoder());
+		spinIntakeIn.whileHeld(new IntakeSpinIn());
+		extendIntake.whileHeld(new ExtendIntake());
+		spitIntakeOut.whileHeld(new IntakeSpitOut());
+		
+		//grabber
+		grabCube.whenPressed(new GrabCube());
+		releaseCube.whenPressed(new ReleaseCube());
+		
+		//climber
+		climberUp.whileHeld(new ClimberUp());
+		climberDown.whileHeld(new ClimberDown());
+		
+		//arm
+		moveArmTo90.whileHeld(new MoveArmToAngle(90));
+		
+		//elevator
+		//moveElevatorDistance.whileHeld(new MoveElevatorDistance(30));
+		
+		//climber assist
+		releaseAssist.whileHeld(new ReleaseAssistArm());
+		
+		//Lifter Automation Buttons
+		moveToPickUpPosition.whileHeld(new MoveArmAndElevatorDistance(16.5, 0));
+		pickupCube.whenPressed(new PickupCube());
+		moveToCruise.whileHeld(new MoveArmAndElevatorDistance(2, 180, 0.5, 0));
+		moveElevatorToTop.whileHeld(new MoveElevatorDistance(58));
+		breakBeamPickup.whileHeld(new BreakBeamPickup());
+				
+		//Operations Buttons
+		zeroElevatorEncoder.whenPressed(new ResetElevatorEncoder());
+		zeroArmEncoder.whenPressed(new ResetArmEncoder());
 	}
 	
 	public Joystick getDriveLeftStick() {

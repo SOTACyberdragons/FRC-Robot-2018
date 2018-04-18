@@ -31,8 +31,8 @@ public class Arm extends Subsystem {
 	private double dangerOfCollisionHeight = 14;
 	private double collisionAngle = 50;
 	
-	public ArmCollisionBounds withCubeBounds = new ArmCollisionBounds(28.5, 40, 3); //TODO find values
-	public ArmCollisionBounds noCubeBounds = new ArmCollisionBounds(14, 40, 5); //TODO find values
+	public ArmCollisionBounds withCubeBounds = new ArmCollisionBounds(28.5, 40, 3);
+	public ArmCollisionBounds noCubeBounds = new ArmCollisionBounds(14, 40, 5);
 	
 	public Arm() {
 		
@@ -116,7 +116,6 @@ public class Arm extends Subsystem {
 //     * @deprecated
 //     * @param angle in deg, 0 - 359
 //     * 
-//     * TODO explain pls
 //     * @return null if coordinate system is ok, starting angle in degrees if
 //     * coordinate system must be restored to original.
 //     */

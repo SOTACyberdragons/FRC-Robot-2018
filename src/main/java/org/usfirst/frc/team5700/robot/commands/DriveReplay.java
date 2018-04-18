@@ -84,7 +84,6 @@ public class DriveReplay extends Command {
 			//System.out.println("move_value: " + nextLine[1] + ", rotate_value: " + nextLine[2]);
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("Init completed");

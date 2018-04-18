@@ -39,7 +39,7 @@ public class Elevator extends Subsystem {
 	//Constants
 	public static final double heightIn = 57;
 	public static final double interstageEngagedHeightIn = 26.1;
-	public static final double winchRadiusIn = 1.125; //TODO Find actual
+	public static final double winchRadiusIn = 1.125;
 	public static final double reductionToEncoder = 5;
 	public static final double winchCircumferenceIn = 2 * Math.PI * winchRadiusIn;
 	//public static final double ticksPerIn = (Constants.VersaEncoderTPR * reductionToEncoder) / winchCircumferenceIn;

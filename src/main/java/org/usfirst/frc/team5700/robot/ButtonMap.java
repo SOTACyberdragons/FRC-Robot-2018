@@ -12,7 +12,7 @@ public class ButtonMap {
 		public static final int VAULT_MODE = 4; //Robot.oi.getDriveRightStick());
 		
 		/**
-		 * Auxillary Driver Buttons
+		 * Auxiliary Driver Buttons
 		 */
 		//Grabber 
 		public static final int GRABBER_OPEN = 2; //Robot.oi.getAuxRightStick());
@@ -28,16 +28,12 @@ public class ButtonMap {
 		//Arm
 		public static final int MOVE_ARM_TO_90 = 12; // auxLeftStick
 		
-		//Elevator
-		//public static final int MOVE_ELEVATOR_DISTANCE = 6; // AuxLeftStick
 		//Lifter Placer Automation
 		public static final int MOVE_TO_PICK_UP_POSITION = 3; //Robot.oi.getAuxLeftStick());
 		public static final int PICK_UP_BOX = 4; //Robot.oi.getAuxLeftStick());
 		public static final int MOVE_TO_CRUISE_POSITION = 3; //Robot.oi.getAuxRightStick();
 		public static final int MOVE_ELEVATOR_TO_TOP = 4; //Robot.oi.getAuxRightStick();
 		public static final int BREAK_BREAM_PICKUP = 6; //Robot.oi.getAuxLeftStick());
-		
-		//TODO switch break beam pickup and pick up box buttons
 		
 		/**
 		 * Operations Buttons

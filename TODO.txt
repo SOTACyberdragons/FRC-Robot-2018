@@ -1,7 +1,13 @@
 Pre-competition tasks
 
 Robot calibration
+0. Confirm drivetrain width (24"?)
 1. Tune driver controls via preferences: boost, sensitivity, turn correction, rate change limiting
 2. Tune tank drive for path driving
 	- Uncomment in arcade drive command to use tank drive
-	- Tune variables in normalizedTankDrive in Drivetrain until robot drives forward straight
+	- Tune variables in normalizedTankDrive in Drivetrain until robot drives forward straight with prefs, then remove prefs
+
+Paths
+1. Draw side switch, cross baseline, side scales in OnShape
+2. Add waypoints to spreadsheet and Waypoints in code
+

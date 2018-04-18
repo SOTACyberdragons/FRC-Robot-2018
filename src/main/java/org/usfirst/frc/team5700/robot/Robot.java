@@ -137,8 +137,6 @@ public class Robot extends IterativeRobot {
 		
 		// Initialize all subsystems
 		drivetrain = new Drivetrain();
-		
-		//TODO: uncomment on competition robot //TODID
 		intake = new Intake();
 		elevator = new Elevator();
 		climber = new Climber();
