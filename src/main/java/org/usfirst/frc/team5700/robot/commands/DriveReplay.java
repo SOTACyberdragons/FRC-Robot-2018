@@ -147,7 +147,6 @@ public class DriveReplay extends Command {
 
 		System.out.println("Left motor output: " + leftMotorSpeed + ", right motor output: " + rightMotorSpeed);
 
-
 		Timer.delay(Math.max(periodic_offset, 0));
 		//Robot.drivetrain.arcadeDrive(nextLine[1], nextLine[2]);
 		Robot.drivetrain.tankDrive(leftMotorSpeed, rightMotorSpeed, false); //disable squared

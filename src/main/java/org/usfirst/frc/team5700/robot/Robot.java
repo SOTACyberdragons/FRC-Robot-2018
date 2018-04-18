@@ -78,8 +78,8 @@ public class Robot extends IterativeRobot {
 			"moveArmTo90"
 	};
 	
-	private SendableChooser<String> recordModeChooser;
-	private static String recordMode;
+	private SendableChooser<Boolean> recordModeChooser;
+	private static boolean isRecording;
 	private SendableChooser<String> replayChooser;
 	
 	
@@ -181,13 +181,13 @@ public class Robot extends IterativeRobot {
 	}
 	
 	private void setupRecordMode() {
-		recordModeChooser = new SendableChooser<String>();
-		recordModeChooser.addDefault("Just Drive", "justDrive");
-		recordModeChooser.addObject("Replay", "replay");
+		recordModeChooser = new SendableChooser<Boolean>();
+		recordModeChooser.addDefault("Just Drive", false);
+		recordModeChooser.addObject("Record", true);
 		SmartDashboard.putData("RecordMode", recordModeChooser);
 		SmartDashboard.putData("RecordMode 2", recordModeChooser);
 		SmartDashboard.putString("Replay Name", "MyReplay");
-		recordMode = recordModeChooser.getSelected();
+		isRecording = recordModeChooser.getSelected();
 	}
 
 	/**
@@ -355,10 +355,10 @@ public class Robot extends IterativeRobot {
 		listReplays();
 		drivetrain.resetSensors();
 
-		recordMode = recordModeChooser.getSelected();
+		isRecording = recordModeChooser.getSelected();
 
 		String newReplayName = SmartDashboard.getString("Replay Name", "MyReplay");
-		csvLogger.init(data_fields, Constants.DATA_DIR, recordMode.equals("replay"), newReplayName);
+		csvLogger.init(data_fields, Constants.DATA_DIR, isRecording, newReplayName);
 	}
 
 	/**
@@ -398,8 +398,8 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 	}
 	
-	public static String recordMode() {
-		return recordMode;
+	public static boolean isRecording() {
+		return isRecording;
 	}
 	
 	public static void setGameSide() {

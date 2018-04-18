@@ -63,4 +63,13 @@ public interface Waypoints {
 			};
 		}
 	}
+	
+	//TODO find points
+	public final class CrossBaseline implements Waypoints {
+		public Waypoint[] points() {
+			return  new Waypoint[] {
+					new Waypoint(0, 0, 0)
+			};
+		}
+	}
 }

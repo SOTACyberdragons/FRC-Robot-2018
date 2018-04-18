@@ -102,7 +102,7 @@ public class FollowPath extends Command {
 		SmartDashboard.putNumber("Pathfinder/angleErrorChange", angleErrorChange);
 
 		//		System.out.println("Pathfinder at " + timer.get() + ", output: " + leftMotorOutput);
-		drive.boostedTankDrive(leftMotorOutput - (angleKP * angleError - angleKD * angleErrorChange), 
+		drive.normalizedTankDrive(leftMotorOutput - (angleKP * angleError - angleKD * angleErrorChange), 
 				rightMotorOutput + (angleKP * angleError - angleKD * angleErrorChange));
 	}
 

@@ -8,9 +8,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArcadeDriveWithJoysticks extends Command {
 
-	private Preferences m_prefs = Preferences.getInstance();
-	private double m_moveSensitivityThreshold;
-	private double m_rotateSensitivityThreshold;
+	private Preferences prefs = Preferences.getInstance();
+	private double moveSensitivityThreshold;
+	private double rotateSensitivityThreshold;
+	private SensitivityFilter moveSensitivityFilter;
+	private SensitivityFilter rotateSensitivityFilter;
+	private double rotateSpeed;
 
 	public ArcadeDriveWithJoysticks() {
 		super();
@@ -20,30 +23,37 @@ public class ArcadeDriveWithJoysticks extends Command {
 	@Override
 	protected void initialize() {
 		Robot.drivetrain.resetSensors();
+		
+		moveSensitivityThreshold = prefs.getDouble("moveSensitivityThreshold", 0.05);
+		rotateSensitivityThreshold = prefs.getDouble("rotateSensitivityThreshold", 0.05);
+		rotateSpeed = prefs.getDouble("rotateSpeed", 0.7);
+		
+		prefs.putDouble("moveSensitivityThreshold", moveSensitivityThreshold);
+		prefs.putDouble("rotateSensitivityThreshold", rotateSensitivityThreshold);
+		prefs.putDouble("rotateSpeed", rotateSpeed);
+
+		moveSensitivityFilter = new SensitivityFilter(moveSensitivityThreshold);
+		rotateSensitivityFilter = new SensitivityFilter(rotateSensitivityThreshold);
 	}
 
 	protected void execute() {
 		double moveValue = - Robot.oi.getDriveRightStick().getY(); //forward joystick is negative, back is positive
-		double rotateValue = - Robot.oi.getDriveLeftStick().getX() * 0.7;
+		double rotateValue = - Robot.oi.getDriveLeftStick().getX() * rotateSpeed;
+		
 		SmartDashboard.putNumber("moveValue", moveValue);
 		SmartDashboard.putNumber("rotateValue", rotateValue);
-
-		m_moveSensitivityThreshold = m_prefs.getDouble("moveSensitivityThreshold", 0.05);
-		m_rotateSensitivityThreshold = m_prefs.getDouble("rotateSensitivityThreshold", 0.05);
-
-		SensitivityFilter moveSensitivityFilter = new SensitivityFilter(m_moveSensitivityThreshold);
-		SensitivityFilter rotateSensitivityFilter = new SensitivityFilter(m_rotateSensitivityThreshold);
 
 		double filteredMoveValue = moveSensitivityFilter.output(moveValue);
 		double filteredRotateValue = rotateSensitivityFilter.output(rotateValue);
 
-		if (Robot.recordMode().equals("replay"))
-			Robot.drivetrain.safeArcadeDriveDelayed(filteredMoveValue,
-					filteredRotateValue, 0.01);
-		else
-			Robot.drivetrain.safeArcadeDrive(filteredMoveValue,
-					filteredRotateValue);
-//			Robot.drivetrain.boostedTankDrive(filteredMoveValue, filteredMoveValue);
+		if (Robot.isRecording()) {
+			Robot.drivetrain.safeArcadeDriveDelayed(filteredMoveValue, filteredRotateValue, 0.01);
+		} else {
+			Robot.drivetrain.safeArcadeDrive(filteredMoveValue, filteredRotateValue);
+		}
+		
+		//TODO for tank drive calibration for path driving, comment above and uncomment below
+//		Robot.drivetrain.normalizedTankDrive(moveValue, moveValue);
 
 	}
 

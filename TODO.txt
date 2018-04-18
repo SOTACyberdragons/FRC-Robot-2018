@@ -1,0 +1,7 @@
+Pre-competition tasks
+
+Robot calibration
+1. Tune driver controls via preferences: boost, sensitivity, turn correction, rate change limiting
+2. Tune tank drive for path driving
+	- Uncomment in arcade drive command to use tank drive
+	- Tune variables in normalizedTankDrive in Drivetrain until robot drives forward straight
