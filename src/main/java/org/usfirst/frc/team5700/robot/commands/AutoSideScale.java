@@ -14,6 +14,7 @@ public class AutoSideScale extends CommandGroup {
     	Command followPathToRightScale = new FollowPath(new RightSideScale(), maxSpeed);
 		Command followPathToLeftScale = new FollowPath(new LeftSideScale(), maxSpeed);
     	
+		//TODO update with paths
     	switch (side) {
     		case LEFT:
     			addSequential(new DriveReplay("LeftSideScale"));

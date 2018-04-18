@@ -7,8 +7,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class AutoCrossBaseline extends CommandGroup {
 
-	//double driveDistanceIn = 160;
-	
+	//TODO update with path	
     public AutoCrossBaseline() {
 		addSequential(new DriveReplay("SideSwitch"));
     }

@@ -16,6 +16,7 @@ public class AutoSideSwitch extends CommandGroup {
     	Command followPathToRightSwitch = new FollowPath(new RightSideSwitch(), maxSpeed);
 		Command followPathToLeftSwitch = new FollowPath(new LeftSideSwitch(), maxSpeed);
     	
+		//TODO update with paths
     	switch (side) {
     		case LEFT:
     			addSequential(new DriveReplay("SideSwitch"));

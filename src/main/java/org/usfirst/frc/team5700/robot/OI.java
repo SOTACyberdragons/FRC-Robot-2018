@@ -5,21 +5,19 @@ import org.usfirst.frc.team5700.robot.commands.ClimberDown;
 import org.usfirst.frc.team5700.robot.commands.ClimberUp;
 import org.usfirst.frc.team5700.robot.commands.ExtendIntake;
 import org.usfirst.frc.team5700.robot.commands.GrabCube;
-import org.usfirst.frc.team5700.robot.commands.ReleaseCube;
-import org.usfirst.frc.team5700.robot.commands.ResetArmEncoder;
-import org.usfirst.frc.team5700.robot.commands.IntakeBox;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpinIn;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpitOut;
 import org.usfirst.frc.team5700.robot.commands.MoveArmAndElevatorDistance;
 import org.usfirst.frc.team5700.robot.commands.MoveArmToAngle;
-import org.usfirst.frc.team5700.robot.commands.MoveElevatorWithJoystick;
 import org.usfirst.frc.team5700.robot.commands.MoveElevatorDistance;
 import org.usfirst.frc.team5700.robot.commands.PickupCube;
 import org.usfirst.frc.team5700.robot.commands.ReleaseAssistArm;
+import org.usfirst.frc.team5700.robot.commands.ReleaseCube;
+import org.usfirst.frc.team5700.robot.commands.ResetArmEncoder;
 import org.usfirst.frc.team5700.robot.commands.ResetElevatorEncoder;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator

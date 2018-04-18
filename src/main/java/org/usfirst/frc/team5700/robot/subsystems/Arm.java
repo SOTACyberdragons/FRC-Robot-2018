@@ -4,12 +4,12 @@ import org.usfirst.frc.team5700.robot.Constants;
 import org.usfirst.frc.team5700.robot.Instrum;
 import org.usfirst.frc.team5700.robot.Robot;
 import org.usfirst.frc.team5700.robot.commands.MoveArmWithJoystick;
-import org.usfirst.frc.team5700.robot.subsystems.Arm.ArmCollisionBounds;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -28,6 +28,7 @@ public class Arm extends Subsystem {
 	public double wCubeMaxNominalOutput; //Maximum nominal output, when arm is horizontal to ground
 	public double noCubeMaxNominalOutput;
 
+	@SuppressWarnings("unused")
 	private double dangerOfCollisionHeight = 14;
 	private double collisionAngle = 50;
 	
