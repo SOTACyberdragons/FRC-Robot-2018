@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Arm extends Subsystem {
 	
 	//Motor Controller
-	private TalonSRX _talon;
+	private WPI_TalonSRX talon;
 	
 	//preferences
 	Preferences prefs;
@@ -39,32 +40,34 @@ public class Arm extends Subsystem {
 		
 		super();
 		
-		_talon = new TalonSRX(2);
+		talon = new WPI_TalonSRX(2);
+		talon.setName("Arm", "Talon");
 		/* first choose the sensor */
-		_talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
-		_talon.setSensorPhase(true);
-		_talon.setInverted(true);
+		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
+		talon.setSelectedSensorPosition(180, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
+		talon.setSensorPhase(true);
+		talon.setInverted(true);
 	
 		/* Set relevant frame periods to be at least as fast as periodic rate */
-		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TIMEOUT_MS);
-		_talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TIMEOUT_MS);
+		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, Constants.TIMEOUT_MS);
+		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, Constants.TIMEOUT_MS);
 	
 		/* set the peak and nominal outputs */
-		_talon.configNominalOutputForward(0, Constants.TIMEOUT_MS);
-		_talon.configNominalOutputReverse(0, Constants.TIMEOUT_MS);
-		_talon.configPeakOutputForward(1, Constants.TIMEOUT_MS);
-		_talon.configPeakOutputReverse(-1, Constants.TIMEOUT_MS);
+		talon.configNominalOutputForward(0, Constants.TIMEOUT_MS);
+		talon.configNominalOutputReverse(0, Constants.TIMEOUT_MS);
+		talon.configPeakOutputForward(1, Constants.TIMEOUT_MS);
+		talon.configPeakOutputReverse(-1, Constants.TIMEOUT_MS);
 	
 		/* set closed loop gains in slot 0 - see documentation */
-		_talon.selectProfileSlot(Constants.SLOT_IDX, Constants.PID_LOOP_IDX);
-		_talon.config_kF(0, Constants.TALON_MAX_OUTPUT/encoderMaxSpeed, Constants.TIMEOUT_MS);
-		_talon.config_kP(0, 0.1, Constants.TIMEOUT_MS);
-		_talon.config_kI(0, 0, Constants.TIMEOUT_MS);
-		_talon.config_kD(0, 0, Constants.TIMEOUT_MS);
+		talon.selectProfileSlot(Constants.SLOT_IDX, Constants.PID_LOOP_IDX);
+		talon.config_kF(0, Constants.TALON_MAX_OUTPUT/encoderMaxSpeed, Constants.TIMEOUT_MS);
+		talon.config_kP(0, 0.1, Constants.TIMEOUT_MS);
+		talon.config_kI(0, 0, Constants.TIMEOUT_MS);
+		talon.config_kD(0, 0, Constants.TIMEOUT_MS);
 		
 		/* set acceleration and cruise velocity - see documentation */
-		_talon.configMotionCruiseVelocity(25000 , Constants.TIMEOUT_MS);
-		_talon.configMotionAcceleration(30000, Constants.TIMEOUT_MS);
+		talon.configMotionCruiseVelocity(25000 , Constants.TIMEOUT_MS);
+		talon.configMotionAcceleration(30000, Constants.TIMEOUT_MS);
 	}
 	
 	public void moveArmWithJoystick(double stickValue) {
@@ -73,19 +76,19 @@ public class Arm extends Subsystem {
 		setTalon(stickValue + getFeedForward());
 			
 		/* instrumentation */
-		Instrum.Process(_talon, sb);
+		Instrum.Process(talon, sb);
     }
 	
 	public TalonSRX getTalon() {
-		return _talon;
+		return talon;
 	}
 	
 	public void zeroEncoder() {
-		_talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
+		talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 	}
 	
 	public double getRawEncoderTicks() {
-		return _talon.getSelectedSensorPosition(0);
+		return talon.getSelectedSensorPosition(0);
 	}
 
     public void initDefaultCommand() {
@@ -93,7 +96,7 @@ public class Arm extends Subsystem {
     }
     
     public void log() {
-    		_talon.getMotorOutputVoltage();
+    		talon.getMotorOutputVoltage();
     }
     
     public double getFeedForward() {
@@ -110,7 +113,7 @@ public class Arm extends Subsystem {
      * @param output, as percent input (-1 through 1)
      */
     private void setTalon(double output) {
-    		_talon.set(ControlMode.PercentOutput, output);
+    		talon.set(ControlMode.PercentOutput, output);
     }
     
 //    /**
@@ -167,14 +170,14 @@ public class Arm extends Subsystem {
 	    		}
 	    	}
 	    
-	   		_talon.set(ControlMode.MotionMagic, closestAngle * ticksPerDeg);
+	   		talon.set(ControlMode.MotionMagic, closestAngle * ticksPerDeg);
     }
     
     /**
      * @return raw angle in degrees, not reseting at 360
      */
     public double getRawAngle() {
-    		return _talon.getSelectedSensorPosition(0) / ticksPerDeg;
+    		return talon.getSelectedSensorPosition(0) / ticksPerDeg;
     }
     
     /**

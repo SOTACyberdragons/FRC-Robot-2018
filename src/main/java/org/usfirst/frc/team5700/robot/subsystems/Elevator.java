@@ -64,6 +64,7 @@ public class Elevator extends Subsystem {
 
 		/* first choose the sensor */
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
+		talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 		talon.setSensorPhase(false);
 		talon.setInverted(false);
 

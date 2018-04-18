@@ -219,9 +219,6 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		
 		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
-		
-		dropCube = false;
-//		grabber.close();
 		autoChoice = chooser.getSelected();
 		
 		setGameSide();
