@@ -10,7 +10,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Intake extends Subsystem {
 	
-	private final static double INTAKE_SPEED = -0.65;
+	private final static double INTAKE_SPEED = -0.6;
+	private final static double SPINOUT_SPEED = -1.0;
 	
 	private Solenoid solenoid;
 	Spark intakeMotors;
@@ -45,7 +46,7 @@ public class Intake extends Subsystem {
     
 	//These methods are for spitting out a box.
 	public void spinBothMotorsOut(){
-		intakeMotors.set(INTAKE_SPEED);
+		intakeMotors.set(SPINOUT_SPEED);
 	}
 	
 	//these methods are for pulling in the box (intaking).

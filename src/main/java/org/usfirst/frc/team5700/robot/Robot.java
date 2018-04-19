@@ -97,9 +97,9 @@ public class Robot extends IterativeRobot {
 	private static Command autoLeftSideScale;
 	private static Command autoLeftSideSwitch;
 	
-	private static Side switchSide;
-	private static Side scaleSide;
-	private static StartPosition startPosition;
+	private static Side switchSide = Side.UNKNOWN;
+	private static Side scaleSide = Side.UNKNOWN;
+	private static StartPosition startPosition = StartPosition.UNKNOWN;
 	private static boolean gameDataAvailable;
 	
 	public static CsvLogger csvLogger;
@@ -226,10 +226,16 @@ public class Robot extends IterativeRobot {
 		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
 		
 		autoChoice = chooser.getSelected();
+		SmartDashboard.putString("Selected Autonomous", chooser.getSelected().toString());
+		
+		if (autoChoice == AutoChoice.CENTER_SWITCH) {
+			startPosition = StartPosition.CENTER;
+		}
 		
 		setGameSide();
         
 		if (autoChoice == AutoChoice.DO_NOT_MOVE) {
+			
 			autoCommand = new AutoDoNotMove();
 			
 		} else if (!gameDataAvailable || autoChoice == AutoChoice.CROSS_BASELINE) {
@@ -433,6 +439,10 @@ public class Robot extends IterativeRobot {
     	 		scaleSide = Side.RIGHT;
     	 	}
          }
+		SmartDashboard.putString("gameData", gameData);
+	 	SmartDashboard.putBoolean("gameDataAvailable", gameDataAvailable);
+	 	SmartDashboard.putString("switchSide", switchSide.toString());
+	 	SmartDashboard.putString("scaleSide", scaleSide.toString());
 	}
 
 }

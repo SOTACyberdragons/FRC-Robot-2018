@@ -34,8 +34,8 @@ public class Constants {
 	public static final String DATA_DIR = "/home/lvuser/data_capture/";
 	public static final String PATHFINDER_DIR = "/home/lvuser/pathfinder/";
 
-	public static enum Side {LEFT, RIGHT};
-	public static enum StartPosition {LEFT, CENTER, RIGHT};
+	public static enum Side {LEFT, RIGHT, UNKNOWN};
+	public static enum StartPosition {LEFT, CENTER, RIGHT, UNKNOWN};
 	
 	public static enum AutoChoice {DO_NOT_MOVE, CROSS_BASELINE, CENTER_SWITCH, 
 		LEFT_SWITCH_PRIORITY, LEFT_SCALE_PRIORITY, RIGHT_SWITCH_PRIORITY, 
