@@ -38,7 +38,7 @@ public class ArcadeDriveWithJoysticks extends Command {
 
 	protected void execute() {
 		double moveValue = - Robot.oi.getDriveRightStick().getY(); //forward joystick is negative, back is positive
-		double rotateValue = - Robot.oi.getDriveLeftStick().getX() * rotateSpeed;
+		double rotateValue = Robot.oi.getDriveLeftStick().getX() * rotateSpeed;
 		
 		SmartDashboard.putNumber("moveValue", moveValue);
 		SmartDashboard.putNumber("rotateValue", rotateValue);

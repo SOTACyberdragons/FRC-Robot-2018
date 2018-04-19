@@ -322,6 +322,11 @@ public class Robot extends IterativeRobot {
 		//Arm
 		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
 		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
+		
+		SmartDashboard.putNumber("Right Encoder Distance", drivetrain.getRightEncoder().getDistance());
+		SmartDashboard.putNumber("Left Encoder Distance", drivetrain.getLeftEncoder().getDistance());
+		SmartDashboard.putNumber("Right Encoder Speed", drivetrain.getRightEncoder().getRate());
+		SmartDashboard.putNumber("Left Encoder Speed", drivetrain.getLeftEncoder().getRate());
 	}
 	
 	private void listReplays() {
@@ -368,6 +373,12 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();	
+		SmartDashboard.putNumber("Right Encoder Distance", drivetrain.getRightEncoder().getDistance());
+		SmartDashboard.putNumber("Left Encoder Distance", drivetrain.getLeftEncoder().getDistance());
+		SmartDashboard.putNumber("Right Encoder Speed", drivetrain.getRightEncoder().getRate());
+		SmartDashboard.putNumber("Left Encoder Speed", drivetrain.getLeftEncoder().getRate());
+
+		
 		
 		//Intake
 		SmartDashboard.putBoolean("Front Break Beam", intake.getFrontBreakBeam());

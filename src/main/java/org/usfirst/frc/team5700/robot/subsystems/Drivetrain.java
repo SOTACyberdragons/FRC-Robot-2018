@@ -67,9 +67,9 @@ public class Drivetrain extends Subsystem {
 		rightMotor = new Spark(RobotMap.RIGHT_DRIVE_MOTOR);
 		drive = new DifferentialDrive(leftMotor, rightMotor);
 
-		leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_A_CHANNEL, RobotMap.LEFT_ENCODER_B_CHANNEL, true);
+		leftEncoder = new Encoder(RobotMap.LEFT_ENCODER_A_CHANNEL, RobotMap.LEFT_ENCODER_B_CHANNEL, false);
 		leftEncoder.setName("Drivetrain", "Left Encoder");
-		rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_A_CHANNEL, RobotMap.RIGHT_ENCODER_B_CHANNEL, false);
+		rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER_A_CHANNEL, RobotMap.RIGHT_ENCODER_B_CHANNEL, true);
 		rightEncoder.setName("Drivetrain", "Right Encoder");
 		accel = new BuiltInAccelerometer();
 		gyro = new ADXRS450_Gyro();
