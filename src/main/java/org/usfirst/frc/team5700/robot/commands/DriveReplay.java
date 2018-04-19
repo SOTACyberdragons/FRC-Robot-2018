@@ -89,20 +89,6 @@ public class DriveReplay extends Command {
 		System.out.println("Init completed");
 	}
 
-	//	Robot.csvLogger.writeData(
-	//			timer.get(), 
-	//			moveValue, //move input
-	//			rotateValue, //rotate input
-	//			leftMotorSpeed,
-	//			rightMotorSpeed,
-	//			getAverageEncoderRate(),
-	//			leftEncoder.getRate(),
-	//			rightEncoder.getRate(),
-	//			leftEncoder.getDistance(),
-	//			rightEncoder.getDistance(),
-	//			gyro.getAngle()
-	//			);
-
 	@Override
 	protected void execute() {
 		double leftEncoderDistance = Robot.drivetrain.getLeftEncoder().getDistance();

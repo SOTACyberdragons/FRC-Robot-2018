@@ -25,7 +25,8 @@ public class BoostFilter {
 		double sign = Math.signum(input);
 		double magn = Math.abs(input);
 		
-		return sign * (magn * (1 - boost) + boost);
+		double result = sign * (magn * (1 - boost) + boost);
+		return result;
 	}
 
 }

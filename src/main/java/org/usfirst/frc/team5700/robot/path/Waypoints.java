@@ -15,7 +15,6 @@ public interface Waypoints {
 					new Waypoint(97, 60, Pathfinder.d2r(81))
 			};
 		}
-
 	}
 
 	public final class CenterToRightSwitch implements Waypoints {
@@ -28,47 +27,47 @@ public interface Waypoints {
 		}
 	}
 
-	//TODO find points
 	public final class RightSideScale implements Waypoints {
 		public Waypoint[] points() {
 			return  new Waypoint[] {
-					new Waypoint(0, 0, 0)
+					new Waypoint(0, 0, 0),
+					new Waypoint(291, 1, 0)
 			};
 		}
 	}
 
-	//TODO find points
 	public final class LeftSideScale implements Waypoints {
 		public Waypoint[] points() {
 			return  new Waypoint[] {
-					new Waypoint(0, 0, 0)
+					new Waypoint(0, 0, 0),
+					new Waypoint(291, -1, 0)
 			};
 		}
 	}
 
-	//TODO find points
 	public final class RightSideSwitch implements Waypoints {
 		public Waypoint[] points() {
 			return  new Waypoint[] {
-					new Waypoint(0, 0, 0)
+					new Waypoint(0, 0, 0),
+					new Waypoint(135, 17, 0)
 			};
 		}
 	}
 
-	//TODO find points
 	public final class LeftSideSwitch implements Waypoints {
 		public Waypoint[] points() {
 			return  new Waypoint[] {
-					new Waypoint(0, 0, 0)
+					new Waypoint(0, 0, 0),
+					new Waypoint(135, -17, 0)
 			};
 		}
 	}
 	
-	//TODO find points
 	public final class CrossBaseline implements Waypoints {
 		public Waypoint[] points() {
 			return  new Waypoint[] {
-					new Waypoint(0, 0, 0)
+					new Waypoint(0, 0, 0),
+					new Waypoint(120, 0, 0)
 			};
 		}
 	}

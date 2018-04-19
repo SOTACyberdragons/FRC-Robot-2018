@@ -35,8 +35,6 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -44,13 +42,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
+@SuppressWarnings("unused")
 public class Robot extends IterativeRobot {
 	private AutoChoice autoChoice;
 	private Command autoCommand;
 	public static Preferences prefs;
 
 	SendableChooser<AutoChoice> chooser;
-
 
 	public static OI oi;
 	public static Drivetrain drivetrain;
@@ -82,7 +80,6 @@ public class Robot extends IterativeRobot {
 	private static boolean isRecording;
 	private SendableChooser<String> replayChooser;
 	
-	
 	/*Auto Commands*/
 	//Baseline
 	private static Command autoCrossBaselineCenter;
@@ -100,10 +97,15 @@ public class Robot extends IterativeRobot {
 	private static Command autoLeftSideScale;
 	private static Command autoLeftSideSwitch;
 	
+	private static Side switchSide;
+	private static Side scaleSide;
+	private static StartPosition startPosition;
+	private static boolean gameDataAvailable;
 	
 	public static CsvLogger csvLogger;
 	
 	private static void initPathCommands() {
+		System.out.println("Initializing path commands...");
 		//Baseline
 		autoCrossBaselineCenter = new AutoCrossBaselineCenter();
 		autoCrossBaseline = new AutoCrossBaseline();
@@ -117,14 +119,10 @@ public class Robot extends IterativeRobot {
 		autoRightSideScale = new AutoSideScale(Side.RIGHT);
 		
 		//Left Side
-		autoLeftSideScale = new AutoSideSwitch(Side.LEFT);
+		autoLeftSideSwitch = new AutoSideSwitch(Side.LEFT);
 		autoLeftSideScale = new AutoSideScale(Side.LEFT);
+		System.out.println("Done initializing path commands.");
 	}
-	
-	private static Side switchSide;
-	private static Side scaleSide;
-	private static StartPosition startPosition;
-	private static boolean gameDataAvailable;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -146,12 +144,19 @@ public class Robot extends IterativeRobot {
 		
 		oi = new OI();
 		
-		@SuppressWarnings("unused")
-		PowerDistributionPanel pdp = new PowerDistributionPanel();
+//		@SuppressWarnings("unused")
+//		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 		initPathCommands();
-		SmartDashboard.putData("Center To Right Switch", autoCenterToRightSwitch);
-		SmartDashboard.putData("Center To Left Switch", autoCenterToLeftSwitch);
+		
+		SmartDashboard.putData("autoCrossBaselineCenter", autoCrossBaselineCenter);
+		SmartDashboard.putData("autoCrossBaseline", autoCrossBaseline);
+		SmartDashboard.putData("autoCenterToRightSwitch", autoCenterToRightSwitch);
+		SmartDashboard.putData("autoCenterToLeftSwitch", autoCenterToLeftSwitch);
+		SmartDashboard.putData("autoRightSideSwitch", autoRightSideSwitch);
+		SmartDashboard.putData("autoRightSideScale", autoRightSideScale);
+		SmartDashboard.putData("autoLeftSideSwitch", autoLeftSideSwitch);
+		SmartDashboard.putData("autoLeftSideScale", autoLeftSideScale);
 		
 
 		// Show what command your subsystem is running on the SmartDashboard
@@ -219,6 +224,7 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		
 		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
+		
 		autoChoice = chooser.getSelected();
 		
 		setGameSide();

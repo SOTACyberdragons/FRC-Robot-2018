@@ -19,9 +19,11 @@ public class SensitivityFilter {
 	
 	public double output(double input) {
 		
+		double sign = Math.signum(input);
 		double magn = Math.abs(input);
 		
-		return magn < threshold ? 0 : (input - threshold) / (1 - threshold);
+		double result = sign * (magn < threshold ? 0 : (magn - threshold) / (1 - threshold));	
+		return result;
 	}
 
 }
