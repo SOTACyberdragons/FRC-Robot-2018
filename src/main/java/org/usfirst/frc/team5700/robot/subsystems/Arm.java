@@ -23,9 +23,10 @@ public class Arm extends Subsystem {
 	Preferences prefs;
 
 	//Constants
-	public final double reductionToEncoder = 114.55; 
-	public final double ticksPerDeg = (Constants.VERSA_ENCODER_TPR * reductionToEncoder) / 360;
-	public final double encoderMaxSpeed = 33000; //ticks per 100 ms
+	public final static double REDUCTION_TO_ENCODER = 114.55; 
+	public final static double TICKS_PER_DEG = (Constants.VERSA_ENCODER_TPR * REDUCTION_TO_ENCODER) / 360;
+	public final static double ENCODER_MAX_SPEED = 33000; //ticks per 100 ms
+	
 	public double wCubeMaxNominalOutput; //Maximum nominal output, when arm is horizontal to ground
 	public double noCubeMaxNominalOutput;
 
@@ -44,7 +45,7 @@ public class Arm extends Subsystem {
 		talon.setName("Arm", "Talon");
 		/* first choose the sensor */
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
-//		talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
+		setEncoder180();
 		talon.setSensorPhase(true);
 		talon.setInverted(true);
 	
@@ -60,7 +61,7 @@ public class Arm extends Subsystem {
 	
 		/* set closed loop gains in slot 0 - see documentation */
 		talon.selectProfileSlot(Constants.SLOT_IDX, Constants.PID_LOOP_IDX);
-		talon.config_kF(0, Constants.TALON_MAX_OUTPUT/encoderMaxSpeed, Constants.TIMEOUT_MS);
+		talon.config_kF(0, Constants.TALON_MAX_OUTPUT/ENCODER_MAX_SPEED, Constants.TIMEOUT_MS);
 		talon.config_kP(0, 0.1, Constants.TIMEOUT_MS);
 		talon.config_kI(0, 0, Constants.TIMEOUT_MS);
 		talon.config_kD(0, 0, Constants.TIMEOUT_MS);
@@ -83,8 +84,8 @@ public class Arm extends Subsystem {
 		return talon;
 	}
 	
-	public void zeroEncoder() {
-		talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
+	public void setEncoder180() {
+		talon.setSelectedSensorPosition((int)(180 * TICKS_PER_DEG), Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 	}
 	
 	public double getRawEncoderTicks() {
@@ -170,14 +171,14 @@ public class Arm extends Subsystem {
 	    		}
 	    	}
 	    
-	   		talon.set(ControlMode.MotionMagic, closestAngle * ticksPerDeg);
+	   		talon.set(ControlMode.MotionMagic, closestAngle * TICKS_PER_DEG);
     }
     
     /**
      * @return raw angle in degrees, not reseting at 360
      */
     public double getRawAngle() {
-    		return talon.getSelectedSensorPosition(0) / ticksPerDeg;
+    		return talon.getSelectedSensorPosition(0) / TICKS_PER_DEG;
     }
     
     /**

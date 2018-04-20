@@ -12,7 +12,7 @@ public class ResetArmEncoder extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    		Robot.arm.zeroEncoder();
+    		Robot.arm.setEncoder180();
     }
 
     // Called repeatedly when this Command is scheduled to run
