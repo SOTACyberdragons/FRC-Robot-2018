@@ -9,7 +9,6 @@ package org.usfirst.frc.team5700.robot;
 
 import org.usfirst.frc.team5700.robot.Constants.AutoChoice;
 import org.usfirst.frc.team5700.robot.Constants.Side;
-import org.usfirst.frc.team5700.robot.Constants.StartPosition;
 import org.usfirst.frc.team5700.robot.commands.AutoCenterSwitch;
 import org.usfirst.frc.team5700.robot.commands.AutoCrossBaseline;
 import org.usfirst.frc.team5700.robot.commands.AutoCrossBaselineCenter;
@@ -42,14 +41,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-
 public class Robot extends IterativeRobot {
-	private AutoChoice autoChoice;
-	private Command autoCommand;
-	public static Preferences prefs;
-
-	SendableChooser<AutoChoice> chooser;
-
+	
+	/** Subsystems **/
 	public static OI oi;
 	public static Drivetrain drivetrain;
 	public static Intake intake;
@@ -58,7 +52,14 @@ public class Robot extends IterativeRobot {
 	public static Arm arm; 
 	public static Grabber grabber;
 	public static AssistSystem assistSystem;
+	
+	public static Preferences prefs;
+	
+	private AutoChoice autoChoice;
+	private SendableChooser<AutoChoice> chooser;
+	private Command autoCommand;
 
+	private static boolean isRecording;
 //	String[] data_fields ={
 //			"time",
 //			"moveValue",
@@ -75,7 +76,6 @@ public class Robot extends IterativeRobot {
 //	};
 
 //	private SendableChooser<Boolean> recordModeChooser;
-	private static boolean isRecording;
 //	private SendableChooser<String> replayChooser;
 
 	/*Auto Commands*/
@@ -98,11 +98,10 @@ public class Robot extends IterativeRobot {
 	//Game setup
 	private Side switchSide = Side.UNKNOWN;
 	private Side scaleSide = Side.UNKNOWN;
-	private StartPosition startPosition = StartPosition.UNKNOWN;
 
 //	public static CsvLogger csvLogger;
 
-	private void initPathCommands() {
+	private void initCommands() {
 		System.out.println("Initializing path commands...");
 		
 		//Baseline
@@ -121,6 +120,15 @@ public class Robot extends IterativeRobot {
 		autoLeftSideSwitch = new AutoSideSwitch(Side.LEFT);
 		autoLeftSideScale = new AutoSideScale(Side.LEFT);
 		System.out.println("Done initializing path commands.");
+		
+		SmartDashboard.putData("autoCrossBaselineCenter", autoCrossBaselineCenter);
+		SmartDashboard.putData("autoCrossBaseline", autoCrossBaseline);
+		SmartDashboard.putData("autoCenterToRightSwitch", autoCenterToRightSwitch);
+		SmartDashboard.putData("autoCenterToLeftSwitch", autoCenterToLeftSwitch);
+		SmartDashboard.putData("autoRightSideSwitch", autoRightSideSwitch);
+		SmartDashboard.putData("autoRightSideScale", autoRightSideScale);
+		SmartDashboard.putData("autoLeftSideSwitch", autoLeftSideSwitch);
+		SmartDashboard.putData("autoLeftSideScale", autoLeftSideScale);
 	}
 
 	/**
@@ -140,55 +148,32 @@ public class Robot extends IterativeRobot {
 		arm = new Arm();
 		grabber = new Grabber();
 		assistSystem = new AssistSystem();
+		
+		grabber.close();
 
 		oi = new OI();
 
 //		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
-		initPathCommands();
-
-		SmartDashboard.putData("autoCrossBaselineCenter", autoCrossBaselineCenter);
-		SmartDashboard.putData("autoCrossBaseline", autoCrossBaseline);
-		SmartDashboard.putData("autoCenterToRightSwitch", autoCenterToRightSwitch);
-		SmartDashboard.putData("autoCenterToLeftSwitch", autoCenterToLeftSwitch);
-		SmartDashboard.putData("autoRightSideSwitch", autoRightSideSwitch);
-		SmartDashboard.putData("autoRightSideScale", autoRightSideScale);
-		SmartDashboard.putData("autoLeftSideSwitch", autoLeftSideSwitch);
-		SmartDashboard.putData("autoLeftSideScale", autoLeftSideScale);
-
-
-		// Show what command your subsystem is running on the SmartDashboard
-		SmartDashboard.putData(drivetrain);
+		initCommands();
 
 		//Autonomous Chooser
 		chooser = new SendableChooser<AutoChoice>();
 		chooser.addObject("Don't Move", AutoChoice.DO_NOT_MOVE);
-		chooser.addDefault("Cross Baseline", AutoChoice.CROSS_BASELINE);
+		chooser.addDefault("Cross Baseline (Sides Only)", AutoChoice.CROSS_BASELINE);
 		chooser.addObject("Center Switch", AutoChoice.CENTER_SWITCH);
 		chooser.addObject("Right Side Switch Priority", AutoChoice.RIGHT_SWITCH_PRIORITY);
 		chooser.addObject("Right Side Scale Priority", AutoChoice.RIGHT_SCALE_PRIORITY);
 		chooser.addObject("Left Side Switch Priority", AutoChoice.LEFT_SWITCH_PRIORITY);
 		chooser.addObject("Left Side Scale Priority", AutoChoice.LEFT_SCALE_PRIORITY);
-		chooser.addObject("Replay Test", AutoChoice.REPLAY_TEST);
+//		chooser.addObject("Replay Test", AutoChoice.REPLAY_TEST);
 		SmartDashboard.putData("Autonomous Chooser", chooser);
 
 //		setupRecordMode();
 //		listReplays();
-
-		grabber.close();
-
 //		System.out.println("Instantiating CsvLogger...");
 //		csvLogger = new CsvLogger();
 	}
-
-//	private void setupRecordMode() {
-//		recordModeChooser = new SendableChooser<Boolean>();
-//		recordModeChooser.addDefault("Just Drive", false);
-//		recordModeChooser.addObject("Record", true);
-//		SmartDashboard.putData("RecordMode", recordModeChooser);
-//		SmartDashboard.putString("Replay Name", "MyReplay");
-//		isRecording = recordModeChooser.getSelected();
-//	}
 
 	/**
 	 * This function is called once each time the robot enters Disabled mode.
@@ -207,26 +192,15 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void autonomousInit() {
-		SmartDashboard.putBoolean("In Auto init", true);
-		if (autoCommand != null) {
-			autoCommand.cancel();
-		}
 
 //		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
 
 		autoChoice = chooser.getSelected();
 		SmartDashboard.putString("Selected Autonomous", chooser.getSelected().toString());
 
-		if (autoChoice == AutoChoice.CENTER_SWITCH) {
-			startPosition = StartPosition.CENTER;
-		}
-
-		SmartDashboard.putString("startPosition", startPosition.toString());
-
 		switchSide = Side.UNKNOWN;
 		scaleSide = Side.UNKNOWN;
-		String gameData;
-		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 
 		if (gameData.length() > 0) {
 			if(gameData.charAt(0) == 'L') {
@@ -244,19 +218,12 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("gameData", gameData);
 		SmartDashboard.putString("switchSide", switchSide.toString());
 		SmartDashboard.putString("scaleSide", scaleSide.toString());
-
-		if (autoChoice == AutoChoice.DO_NOT_MOVE) {
-			autoCommand = new AutoDoNotMove();
-
-		} else if (autoChoice == AutoChoice.CROSS_BASELINE) {
-			if (startPosition == StartPosition.CENTER) {
-				autoCommand = autoCrossBaselineCenter;
-
-			} else {
+		
+		switch (autoChoice) {
+			case DO_NOT_MOVE:
+				autoCommand = new AutoDoNotMove();
+			case CROSS_BASELINE:
 				autoCommand = autoCrossBaseline;
-			}
-		} else {
-			switch (autoChoice) {
 			case CENTER_SWITCH:
 				if (switchSide == Side.RIGHT) {
 					autoCommand = autoCenterToRightSwitch;
@@ -266,7 +233,7 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaselineCenter;
 				}
 				break;
-
+		
 			case RIGHT_SCALE_PRIORITY:
 				if (scaleSide == Side.RIGHT) {
 					autoCommand = autoRightSideScale;
@@ -276,7 +243,7 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break;
-
+		
 			case RIGHT_SWITCH_PRIORITY:
 				if (switchSide == Side.RIGHT){
 					autoCommand = autoRightSideSwitch;
@@ -286,7 +253,7 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break;
-
+		
 			case LEFT_SCALE_PRIORITY:
 				if (scaleSide == Side.LEFT) {
 					autoCommand = autoLeftSideScale;
@@ -296,7 +263,7 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break;
-
+		
 			case LEFT_SWITCH_PRIORITY:
 				if (switchSide == Side.LEFT){
 					autoCommand = autoLeftSideSwitch;
@@ -306,19 +273,14 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break;
-
+		
 //			case REPLAY_TEST:
 //				autoCommand = new DriveReplay(replayChooser.getSelected());
 //				break;
-
+		
 			default:
-				if (startPosition == StartPosition.CENTER) {
-					autoCommand = autoCrossBaselineCenter;
-
-				} else {
-					autoCommand = autoCrossBaseline;
-				}
-			}
+				//will only work on sides
+				autoCommand = autoCrossBaseline;
 		}
 
 		SmartDashboard.putString("Autonomous Command", autoCommand.getName());
@@ -345,41 +307,18 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Left Encoder Speed", drivetrain.getLeftEncoder().getRate());
 	}
 
-//	private void listReplays() {
-//		System.out.println("Listing replays...");
-//		replayChooser = new SendableChooser<String>();
-//		Iterator<Path> replayFiles = null;
-//		try {
-//			replayFiles = Files.newDirectoryStream(Paths.get(Constants.DATA_DIR), "*.rpl").iterator();
-//			if (replayFiles.hasNext()) {
-//				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
-//				replayChooser.addDefault(replayFile, replayFile);
-//			}
-//			while (replayFiles.hasNext()) {
-//				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
-//				System.out.println(replayFile);
-//				replayChooser.addObject(replayFile, replayFile);
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		SmartDashboard.putData("ReplaySelector", replayChooser);
-//	}
-
 	@Override
 	public void teleopInit() {
 
 		if (autoCommand != null) {
 			autoCommand.cancel();
 		}
+		
+		drivetrain.resetSensors();
 
 //		setupRecordMode();
 //		listReplays();
-		drivetrain.resetSensors();
-
 //		isRecording = recordModeChooser.getSelected();
-
 //		String newReplayName = SmartDashboard.getString("Replay Name", "MyReplay");
 //		csvLogger.init(data_fields, Constants.DATA_DIR, isRecording, newReplayName);
 	}
@@ -430,31 +369,62 @@ public class Robot extends IterativeRobot {
 		return isRecording;
 	}
 
-	//	public static void setGameSide() {
-	//
-	//		switchSide = Side.UNKNOWN;
-	//		scaleSide = Side.UNKNOWN;
-	//		String gameData;
-	//		gameData = DriverStation.getInstance().getGameSpecificMessage();
-	//
-	//		if (gameData.length() > 0) {
-	////			gameDataAvailable = true;
-	//
-	//			if(gameData.charAt(0) == 'L') {
-	//				switchSide = Side.LEFT;
-	//			} else {
-	//				switchSide = Side.RIGHT;
-	//			}
-	//			if (gameData.charAt(1) == 'L') {
-	//				scaleSide = Side.LEFT;
-	//			} else {
-	//				scaleSide = Side.RIGHT;
-	//			}
-	//		}
-	//		SmartDashboard.putString("gameData", gameData);
-	//		SmartDashboard.putBoolean("gameDataAvailable", gameDataAvailable);
-	//		SmartDashboard.putString("switchSide", switchSide.toString());
-	//		SmartDashboard.putString("scaleSide", scaleSide.toString());
-	//	}
+//	public static void setGameSide() {
+//
+//		switchSide = Side.UNKNOWN;
+//		scaleSide = Side.UNKNOWN;
+//		String gameData;
+//		gameData = DriverStation.getInstance().getGameSpecificMessage();
+//
+//		if (gameData.length() > 0) {
+////			gameDataAvailable = true;
+//
+//			if(gameData.charAt(0) == 'L') {
+//				switchSide = Side.LEFT;
+//			} else {
+//				switchSide = Side.RIGHT;
+//			}
+//			if (gameData.charAt(1) == 'L') {
+//				scaleSide = Side.LEFT;
+//			} else {
+//				scaleSide = Side.RIGHT;
+//			}
+//		}
+//		SmartDashboard.putString("gameData", gameData);
+//		SmartDashboard.putBoolean("gameDataAvailable", gameDataAvailable);
+//		SmartDashboard.putString("switchSide", switchSide.toString());
+//		SmartDashboard.putString("scaleSide", scaleSide.toString());
+//	}
+	
+//	private void setupRecordMode() {
+//		recordModeChooser = new SendableChooser<Boolean>();
+//		recordModeChooser.addDefault("Just Drive", false);
+//		recordModeChooser.addObject("Record", true);
+//		SmartDashboard.putData("RecordMode", recordModeChooser);
+//		SmartDashboard.putString("Replay Name", "MyReplay");
+//		isRecording = recordModeChooser.getSelected();
+//	}
+
+//	private void listReplays() {
+//		System.out.println("Listing replays...");
+//		replayChooser = new SendableChooser<String>();
+//		Iterator<Path> replayFiles = null;
+//		try {
+//			replayFiles = Files.newDirectoryStream(Paths.get(Constants.DATA_DIR), "*.rpl").iterator();
+//			if (replayFiles.hasNext()) {
+//				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
+//				replayChooser.addDefault(replayFile, replayFile);
+//			}
+//			while (replayFiles.hasNext()) {
+//				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
+//				System.out.println(replayFile);
+//				replayChooser.addObject(replayFile, replayFile);
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		SmartDashboard.putData("ReplaySelector", replayChooser);
+//	}
 
 }
