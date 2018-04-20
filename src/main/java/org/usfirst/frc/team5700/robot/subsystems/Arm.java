@@ -44,7 +44,7 @@ public class Arm extends Subsystem {
 		talon.setName("Arm", "Talon");
 		/* first choose the sensor */
 		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
-		talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
+//		talon.setSelectedSensorPosition(0, Constants.PID_LOOP_IDX, Constants.TIMEOUT_MS);
 		talon.setSensorPhase(true);
 		talon.setInverted(true);
 	
