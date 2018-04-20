@@ -1,11 +1,11 @@
 
 package org.usfirst.frc.team5700.robot;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Iterator;
+//import java.io.IOException;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
+//import java.util.Iterator;
 
 import org.usfirst.frc.team5700.robot.Constants.AutoChoice;
 import org.usfirst.frc.team5700.robot.Constants.Side;
@@ -16,7 +16,7 @@ import org.usfirst.frc.team5700.robot.commands.AutoCrossBaselineCenter;
 import org.usfirst.frc.team5700.robot.commands.AutoDoNotMove;
 import org.usfirst.frc.team5700.robot.commands.AutoSideScale;
 import org.usfirst.frc.team5700.robot.commands.AutoSideSwitch;
-import org.usfirst.frc.team5700.robot.commands.DriveReplay;
+//import org.usfirst.frc.team5700.robot.commands.DriveReplay;
 import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
@@ -24,11 +24,11 @@ import org.usfirst.frc.team5700.robot.subsystems.Drivetrain;
 import org.usfirst.frc.team5700.robot.subsystems.Elevator;
 import org.usfirst.frc.team5700.robot.subsystems.Grabber;
 import org.usfirst.frc.team5700.robot.subsystems.Intake;
-import org.usfirst.frc.team5700.utils.CsvLogger;
+//import org.usfirst.frc.team5700.utils.CsvLogger;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
+//import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -42,7 +42,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * creating this project, you must also update the manifest file in the resource
  * directory.
  */
-@SuppressWarnings("unused")
+
 public class Robot extends IterativeRobot {
 	private AutoChoice autoChoice;
 	private Command autoCommand;
@@ -58,66 +58,65 @@ public class Robot extends IterativeRobot {
 	public static Arm arm; 
 	public static Grabber grabber;
 	public static AssistSystem assistSystem;
-	
-	public static boolean dropCube = false;
-	
-	String[] data_fields ={
-			"time",
-			"moveValue",
-			"rotateValue",
-			"leftMotorSpeed",
-			"rightMotorSpeed",
-			"speed",
-			"leftSpeed",
-			"rightSpeed",
-			"leftDistance",
-			"rightDistance",
-			"headingError",
-			"moveArmTo90"
-	};
-	
-	private SendableChooser<Boolean> recordModeChooser;
+
+//	String[] data_fields ={
+//			"time",
+//			"moveValue",
+//			"rotateValue",
+//			"leftMotorSpeed",
+//			"rightMotorSpeed",
+//			"speed",
+//			"leftSpeed",
+//			"rightSpeed",
+//			"leftDistance",
+//			"rightDistance",
+//			"headingError",
+//			"moveArmTo90"
+//	};
+
+//	private SendableChooser<Boolean> recordModeChooser;
 	private static boolean isRecording;
-	private SendableChooser<String> replayChooser;
-	
+//	private SendableChooser<String> replayChooser;
+
 	/*Auto Commands*/
 	//Baseline
-	private static Command autoCrossBaselineCenter;
-	private static Command autoCrossBaseline;
-	
+	private Command autoCrossBaselineCenter;
+	private Command autoCrossBaseline;
+
 	//Center
-	private static Command autoCenterToRightSwitch;
-	private static Command autoCenterToLeftSwitch;
-	
+	private Command autoCenterToRightSwitch;
+	private Command autoCenterToLeftSwitch;
+
 	//Right Side
-	private static Command autoRightSideSwitch;
-	private static Command autoRightSideScale;
-	
+	private Command autoRightSideSwitch;
+	private Command autoRightSideScale;
+
 	//Left Side
-	private static Command autoLeftSideScale;
-	private static Command autoLeftSideSwitch;
-	
-	private static Side switchSide = Side.UNKNOWN;
-	private static Side scaleSide = Side.UNKNOWN;
-	private static StartPosition startPosition = StartPosition.UNKNOWN;
-	private static boolean gameDataAvailable;
-	
-	public static CsvLogger csvLogger;
-	
-	private static void initPathCommands() {
+	private Command autoLeftSideScale;
+	private Command autoLeftSideSwitch;
+
+	//Game setup
+	private Side switchSide = Side.UNKNOWN;
+	private Side scaleSide = Side.UNKNOWN;
+	private StartPosition startPosition = StartPosition.UNKNOWN;
+
+//	public static CsvLogger csvLogger;
+
+	private void initPathCommands() {
 		System.out.println("Initializing path commands...");
+		
 		//Baseline
 		autoCrossBaselineCenter = new AutoCrossBaselineCenter();
 		autoCrossBaseline = new AutoCrossBaseline();
-		
+
 		//Center
 		autoCenterToRightSwitch = new AutoCenterSwitch(Side.RIGHT);
 		autoCenterToLeftSwitch = new AutoCenterSwitch(Side.LEFT);
-		
+
 		//Right Side
 		autoRightSideSwitch = new AutoSideSwitch(Side.RIGHT);
 		autoRightSideScale = new AutoSideScale(Side.RIGHT);
-		
+
 		//Left Side
 		autoLeftSideSwitch = new AutoSideSwitch(Side.LEFT);
 		autoLeftSideScale = new AutoSideScale(Side.LEFT);
@@ -132,7 +131,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 
 		prefs = Preferences.getInstance();
-		
+
 		// Initialize all subsystems
 		drivetrain = new Drivetrain();
 		intake = new Intake();
@@ -141,14 +140,13 @@ public class Robot extends IterativeRobot {
 		arm = new Arm();
 		grabber = new Grabber();
 		assistSystem = new AssistSystem();
-		
+
 		oi = new OI();
-		
-//		@SuppressWarnings("unused")
+
 //		PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 		initPathCommands();
-		
+
 		SmartDashboard.putData("autoCrossBaselineCenter", autoCrossBaselineCenter);
 		SmartDashboard.putData("autoCrossBaseline", autoCrossBaseline);
 		SmartDashboard.putData("autoCenterToRightSwitch", autoCenterToRightSwitch);
@@ -157,41 +155,40 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("autoRightSideScale", autoRightSideScale);
 		SmartDashboard.putData("autoLeftSideSwitch", autoLeftSideSwitch);
 		SmartDashboard.putData("autoLeftSideScale", autoLeftSideScale);
-		
+
 
 		// Show what command your subsystem is running on the SmartDashboard
 		SmartDashboard.putData(drivetrain);
-		
+
 		//Autonomous Chooser
-        chooser = new SendableChooser<AutoChoice>();
- 		chooser.addObject("Dont Move", AutoChoice.DO_NOT_MOVE);
- 		chooser.addDefault("Cross Baseline", AutoChoice.CROSS_BASELINE);
- 		chooser.addObject("Center Switch", AutoChoice.CENTER_SWITCH);
- 		chooser.addObject("Right Side Switch Priority", AutoChoice.RIGHT_SWITCH_PRIORITY);
- 		chooser.addObject("Right Side Scale Priority", AutoChoice.RIGHT_SCALE_PRIORITY);
- 		chooser.addObject("Left Side Switch Priority", AutoChoice.LEFT_SWITCH_PRIORITY);
- 		chooser.addObject("Left Side Scale Priority", AutoChoice.LEFT_SCALE_PRIORITY);
+		chooser = new SendableChooser<AutoChoice>();
+		chooser.addObject("Don't Move", AutoChoice.DO_NOT_MOVE);
+		chooser.addDefault("Cross Baseline", AutoChoice.CROSS_BASELINE);
+		chooser.addObject("Center Switch", AutoChoice.CENTER_SWITCH);
+		chooser.addObject("Right Side Switch Priority", AutoChoice.RIGHT_SWITCH_PRIORITY);
+		chooser.addObject("Right Side Scale Priority", AutoChoice.RIGHT_SCALE_PRIORITY);
+		chooser.addObject("Left Side Switch Priority", AutoChoice.LEFT_SWITCH_PRIORITY);
+		chooser.addObject("Left Side Scale Priority", AutoChoice.LEFT_SCALE_PRIORITY);
 		chooser.addObject("Replay Test", AutoChoice.REPLAY_TEST);
- 		SmartDashboard.putData("Autonomous Chooser", chooser);
- 		
-		setupRecordMode();
-		listReplays();
- 		
- 		grabber.close();
- 		
-		System.out.println("Instantiating CsvLogger...");
-		csvLogger = new CsvLogger();
+		SmartDashboard.putData("Autonomous Chooser", chooser);
+
+//		setupRecordMode();
+//		listReplays();
+
+		grabber.close();
+
+//		System.out.println("Instantiating CsvLogger...");
+//		csvLogger = new CsvLogger();
 	}
-	
-	private void setupRecordMode() {
-		recordModeChooser = new SendableChooser<Boolean>();
-		recordModeChooser.addDefault("Just Drive", false);
-		recordModeChooser.addObject("Record", true);
-		SmartDashboard.putData("RecordMode", recordModeChooser);
-		SmartDashboard.putData("RecordMode 2", recordModeChooser);
-		SmartDashboard.putString("Replay Name", "MyReplay");
-		isRecording = recordModeChooser.getSelected();
-	}
+
+//	private void setupRecordMode() {
+//		recordModeChooser = new SendableChooser<Boolean>();
+//		recordModeChooser.addDefault("Just Drive", false);
+//		recordModeChooser.addObject("Record", true);
+//		SmartDashboard.putData("RecordMode", recordModeChooser);
+//		SmartDashboard.putString("Replay Name", "MyReplay");
+//		isRecording = recordModeChooser.getSelected();
+//	}
 
 	/**
 	 * This function is called once each time the robot enters Disabled mode.
@@ -203,116 +200,129 @@ public class Robot extends IterativeRobot {
 		grabber.close();
 	}
 
-
 	@Override
 	public void disabledPeriodic() {
-		csvLogger.close();
+//		csvLogger.close();
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString code to get the auto name from the text box below the Gyro
-	 *
-	 * You can add additional auto modes by adding additional commands to the
-	 * chooser code above (like the commented example) or additional comparisons
-	 * to the switch structure below with additional strings & commands.
-	 */
 	@Override
 	public void autonomousInit() {
-		
-		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
-		
+		SmartDashboard.putBoolean("In Auto init", true);
+		if (autoCommand != null) {
+			autoCommand.cancel();
+		}
+
+//		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
+
 		autoChoice = chooser.getSelected();
 		SmartDashboard.putString("Selected Autonomous", chooser.getSelected().toString());
-		
+
 		if (autoChoice == AutoChoice.CENTER_SWITCH) {
 			startPosition = StartPosition.CENTER;
 		}
-		
-		setGameSide();
-        
+
+		SmartDashboard.putString("startPosition", startPosition.toString());
+
+		switchSide = Side.UNKNOWN;
+		scaleSide = Side.UNKNOWN;
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+
+		if (gameData.length() > 0) {
+			if(gameData.charAt(0) == 'L') {
+				switchSide = Side.LEFT;
+			} else {
+				switchSide = Side.RIGHT;
+			}
+			if (gameData.charAt(1) == 'L') {
+				scaleSide = Side.LEFT;
+			} else {
+				scaleSide = Side.RIGHT;
+			}
+		}
+
+		SmartDashboard.putString("gameData", gameData);
+		SmartDashboard.putString("switchSide", switchSide.toString());
+		SmartDashboard.putString("scaleSide", scaleSide.toString());
+
 		if (autoChoice == AutoChoice.DO_NOT_MOVE) {
-			
 			autoCommand = new AutoDoNotMove();
-			
-		} else if (!gameDataAvailable || autoChoice == AutoChoice.CROSS_BASELINE) {
-			
+
+		} else if (autoChoice == AutoChoice.CROSS_BASELINE) {
 			if (startPosition == StartPosition.CENTER) {
 				autoCommand = autoCrossBaselineCenter;
-				
+
 			} else {
 				autoCommand = autoCrossBaseline;
 			}
 		} else {
-	         switch (autoChoice) {
-	         	case CENTER_SWITCH:
-	         		if (switchSide == Side.RIGHT) {
-	         			autoCommand = autoCenterToRightSwitch;
-	         		} else if (switchSide == Side.LEFT) {
-	         			autoCommand = autoCenterToLeftSwitch;
-	         		} else {
-	         			autoCommand = autoCrossBaselineCenter;
-	         		}
-	         		break;
-	         		
-	         	case RIGHT_SCALE_PRIORITY:
-	         		if (scaleSide == Side.RIGHT) {
-	         			autoCommand = autoRightSideScale;
-	         		} else if (switchSide == Side.RIGHT){
-	         			autoCommand = autoRightSideSwitch;
-	         		} else {
-	         			autoCommand = autoCrossBaseline;
-	         		}
-	         		break;
-	         		
-	         	case RIGHT_SWITCH_PRIORITY:
-	         		if (switchSide == Side.RIGHT){
-	         			autoCommand = autoRightSideSwitch;
-	         		} else if (scaleSide == Side.RIGHT) {
-	         			autoCommand = autoRightSideScale;
-	         		} else {
-	         			autoCommand = autoCrossBaseline;
-	         		}
-	         		break;
-	         		
-	         	case LEFT_SCALE_PRIORITY:
-	         		if (scaleSide == Side.LEFT) {
-	         			autoCommand = autoLeftSideScale;
-	         		} else if (switchSide == Side.LEFT){
-	         			autoCommand = autoLeftSideSwitch;
-	         		} else {
-	         			autoCommand = autoCrossBaseline;
-	         		}
-	         		break;
-	         		
-	         	case LEFT_SWITCH_PRIORITY:
-	         		if (switchSide == Side.LEFT){
-	         			autoCommand = autoLeftSideSwitch;
-	         		} else if (scaleSide == Side.LEFT) {
-	         			autoCommand = autoLeftSideScale;
-	         		} else {
-	         			autoCommand = autoCrossBaseline;
-	         		}
-	         		break;
-	         		
-	         	case REPLAY_TEST:
-	         		autoCommand = new DriveReplay(replayChooser.getSelected());
-	         		break;
-	         		
-	         	default:
-	         		if (startPosition == StartPosition.CENTER) {
-	    				autoCommand = autoCrossBaselineCenter;
-	    				
-	    			} else {
-	    				autoCommand = autoCrossBaseline;
-	    			}
-	         }
+			switch (autoChoice) {
+			case CENTER_SWITCH:
+				if (switchSide == Side.RIGHT) {
+					autoCommand = autoCenterToRightSwitch;
+				} else if (switchSide == Side.LEFT) {
+					autoCommand = autoCenterToLeftSwitch;
+				} else {
+					autoCommand = autoCrossBaselineCenter;
+				}
+				break;
+
+			case RIGHT_SCALE_PRIORITY:
+				if (scaleSide == Side.RIGHT) {
+					autoCommand = autoRightSideScale;
+				} else if (switchSide == Side.RIGHT){
+					autoCommand = autoRightSideSwitch;
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+				break;
+
+			case RIGHT_SWITCH_PRIORITY:
+				if (switchSide == Side.RIGHT){
+					autoCommand = autoRightSideSwitch;
+				} else if (scaleSide == Side.RIGHT) {
+					autoCommand = autoRightSideScale;
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+				break;
+
+			case LEFT_SCALE_PRIORITY:
+				if (scaleSide == Side.LEFT) {
+					autoCommand = autoLeftSideScale;
+				} else if (switchSide == Side.LEFT){
+					autoCommand = autoLeftSideSwitch;
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+				break;
+
+			case LEFT_SWITCH_PRIORITY:
+				if (switchSide == Side.LEFT){
+					autoCommand = autoLeftSideSwitch;
+				} else if (scaleSide == Side.LEFT) {
+					autoCommand = autoLeftSideScale;
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+				break;
+
+//			case REPLAY_TEST:
+//				autoCommand = new DriveReplay(replayChooser.getSelected());
+//				break;
+
+			default:
+				if (startPosition == StartPosition.CENTER) {
+					autoCommand = autoCrossBaselineCenter;
+
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+			}
 		}
 
-         autoCommand.start();
+		SmartDashboard.putString("Autonomous Command", autoCommand.getName());
+		autoCommand.start();
 	}
 
 	/**
@@ -321,56 +331,57 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-	
+
 		//Elevator
 		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
-		
+
 		//Arm
 		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
 		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
-		
+
 		SmartDashboard.putNumber("Right Encoder Distance", drivetrain.getRightEncoder().getDistance());
 		SmartDashboard.putNumber("Left Encoder Distance", drivetrain.getLeftEncoder().getDistance());
 		SmartDashboard.putNumber("Right Encoder Speed", drivetrain.getRightEncoder().getRate());
 		SmartDashboard.putNumber("Left Encoder Speed", drivetrain.getLeftEncoder().getRate());
 	}
-	
-	private void listReplays() {
-		System.out.println("Listing replays...");
-		replayChooser = new SendableChooser<String>();
-		Iterator<Path> replayFiles = null;
-		try {
-			replayFiles = Files.newDirectoryStream(Paths.get(Constants.DATA_DIR), "*.rpl").iterator();
-			if (replayFiles.hasNext()) {
-				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
-				replayChooser.addDefault(replayFile, replayFile);
-			}
-			while (replayFiles.hasNext()) {
-				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
-				System.out.println(replayFile);
-				replayChooser.addObject(replayFile, replayFile);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-		SmartDashboard.putData("ReplaySelector", replayChooser);
-	}
+//	private void listReplays() {
+//		System.out.println("Listing replays...");
+//		replayChooser = new SendableChooser<String>();
+//		Iterator<Path> replayFiles = null;
+//		try {
+//			replayFiles = Files.newDirectoryStream(Paths.get(Constants.DATA_DIR), "*.rpl").iterator();
+//			if (replayFiles.hasNext()) {
+//				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
+//				replayChooser.addDefault(replayFile, replayFile);
+//			}
+//			while (replayFiles.hasNext()) {
+//				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
+//				System.out.println(replayFile);
+//				replayChooser.addObject(replayFile, replayFile);
+//			}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		SmartDashboard.putData("ReplaySelector", replayChooser);
+//	}
 
 	@Override
 	public void teleopInit() {
-		
-		if (autoCommand != null)
+
+		if (autoCommand != null) {
 			autoCommand.cancel();
-		
-		setupRecordMode();
-		listReplays();
+		}
+
+//		setupRecordMode();
+//		listReplays();
 		drivetrain.resetSensors();
 
-		isRecording = recordModeChooser.getSelected();
+//		isRecording = recordModeChooser.getSelected();
 
-		String newReplayName = SmartDashboard.getString("Replay Name", "MyReplay");
-		csvLogger.init(data_fields, Constants.DATA_DIR, isRecording, newReplayName);
+//		String newReplayName = SmartDashboard.getString("Replay Name", "MyReplay");
+//		csvLogger.init(data_fields, Constants.DATA_DIR, isRecording, newReplayName);
 	}
 
 	/**
@@ -378,19 +389,18 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		Scheduler.getInstance().run();	
+		Scheduler.getInstance().run();
+		
 		SmartDashboard.putNumber("Right Encoder Distance", drivetrain.getRightEncoder().getDistance());
 		SmartDashboard.putNumber("Left Encoder Distance", drivetrain.getLeftEncoder().getDistance());
 		SmartDashboard.putNumber("Right Encoder Speed", drivetrain.getRightEncoder().getRate());
 		SmartDashboard.putNumber("Left Encoder Speed", drivetrain.getLeftEncoder().getRate());
 
-		
-		
 		//Intake
 		SmartDashboard.putBoolean("Front Break Beam", intake.getFrontBreakBeam());
 		SmartDashboard.putBoolean("Back Break Beam", intake.getBackBreakBeam());
 		SmartDashboard.putBoolean("In Vault Mode", intake.inVaultMode());
-		
+
 		//Elevator 
 		SmartDashboard.putNumber("Elevator Height", elevator.getHeight());
 		SmartDashboard.putNumber("Elevator Encoder Ticks", elevator.getEncoderTicks());
@@ -401,7 +411,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putBoolean("At Bottom Limit ", elevator.atBottomLimit());;
 		SmartDashboard.putBoolean("At Top Limit ", elevator.atTopLimit());
 		SmartDashboard.putBoolean("Limits Overriden ", oi.overrideLimits());
-													
+
 		// Arm
 		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
 		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
@@ -415,34 +425,36 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void testPeriodic() {
 	}
-	
+
 	public static boolean isRecording() {
 		return isRecording;
 	}
-	
-	public static void setGameSide() {
-		
-		String gameData;
-		gameData = DriverStation.getInstance().getGameSpecificMessage();
-        
-		if (gameData.length() > 0) {
-			gameDataAvailable = true;
-			
-    	 	if(gameData.charAt(0) == 'L') {
-    	 		switchSide = Side.LEFT;
-    	 	} else {
-    	 		switchSide = Side.RIGHT;
-    	 	}
-    	 	if (gameData.charAt(1) == 'L') {
-    	 		scaleSide = Side.LEFT;
-    	 	} else {
-    	 		scaleSide = Side.RIGHT;
-    	 	}
-         }
-		SmartDashboard.putString("gameData", gameData);
-	 	SmartDashboard.putBoolean("gameDataAvailable", gameDataAvailable);
-	 	SmartDashboard.putString("switchSide", switchSide.toString());
-	 	SmartDashboard.putString("scaleSide", scaleSide.toString());
-	}
+
+	//	public static void setGameSide() {
+	//
+	//		switchSide = Side.UNKNOWN;
+	//		scaleSide = Side.UNKNOWN;
+	//		String gameData;
+	//		gameData = DriverStation.getInstance().getGameSpecificMessage();
+	//
+	//		if (gameData.length() > 0) {
+	////			gameDataAvailable = true;
+	//
+	//			if(gameData.charAt(0) == 'L') {
+	//				switchSide = Side.LEFT;
+	//			} else {
+	//				switchSide = Side.RIGHT;
+	//			}
+	//			if (gameData.charAt(1) == 'L') {
+	//				scaleSide = Side.LEFT;
+	//			} else {
+	//				scaleSide = Side.RIGHT;
+	//			}
+	//		}
+	//		SmartDashboard.putString("gameData", gameData);
+	//		SmartDashboard.putBoolean("gameDataAvailable", gameDataAvailable);
+	//		SmartDashboard.putString("switchSide", switchSide.toString());
+	//		SmartDashboard.putString("scaleSide", scaleSide.toString());
+	//	}
 
 }

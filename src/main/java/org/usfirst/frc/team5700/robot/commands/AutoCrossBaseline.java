@@ -13,7 +13,7 @@ public class AutoCrossBaseline extends CommandGroup {
 	double maxSpeed = Drivetrain.MAX_SPEED * 0.6;
 		
     public AutoCrossBaseline() {
-		//addSequential(new DriveReplay("SideSwitch"));
+//		addSequential(new DriveReplay("SideSwitch"));
 		addSequential(new FollowPath(new CrossBaseline(), maxSpeed));
     }
 }

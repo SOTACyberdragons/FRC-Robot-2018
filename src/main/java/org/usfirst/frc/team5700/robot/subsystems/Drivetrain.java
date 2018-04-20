@@ -208,19 +208,19 @@ public class Drivetrain extends Subsystem {
 			double filteredRightMotorSpeed = rightMotorSpeed; //SquareFilter.output(rightMotorSpeed);
 
 			//always record values passed to the drive
-			Robot.csvLogger.writeData(
-					timer.get(), 
-					moveValue, //move input
-					rotateValue, //rotate input
-					filteredLeftMotorSpeed,
-					filteredRightMotorSpeed,
-					getAverageEncoderRate(),
-					leftEncoder.getRate(),
-					rightEncoder.getRate(),
-					leftEncoder.getDistance(),
-					rightEncoder.getDistance(),
-					gyro.getAngle()
-					);
+//			Robot.csvLogger.writeData(
+//					timer.get(), 
+//					moveValue, //move input
+//					rotateValue, //rotate input
+//					filteredLeftMotorSpeed,
+//					filteredRightMotorSpeed,
+//					getAverageEncoderRate(),
+//					leftEncoder.getRate(),
+//					rightEncoder.getRate(),
+//					leftEncoder.getDistance(),
+//					rightEncoder.getDistance(),
+//					gyro.getAngle()
+//					);
 
 			drive.tankDrive(filteredLeftMotorSpeed, filteredRightMotorSpeed, false); //squared input by default
 		}

@@ -25,7 +25,7 @@ public class FollowPath extends Command {
 	private static double kA = 0;
 	private static double angleKP;
 	private static double angleKD;
-	
+
 	private Trajectory trajectory;
 	private TankModifier modifier;
 	private DistanceFollower left;
@@ -38,12 +38,14 @@ public class FollowPath extends Command {
 
 	public FollowPath(Waypoints waypoints, double maxSpeed) {
 
+		System.out.println("Initializing Follow Path");
+
 		timer = new Timer();
 		prefs = Robot.prefs;
 		drive = Robot.drivetrain;
 
 		Trajectory.Config config = new Trajectory.Config(Trajectory.FitMethod.HERMITE_CUBIC, 
-				Trajectory.Config.SAMPLES_HIGH, 
+				Trajectory.Config.SAMPLES_FAST, 
 				Constants.CYCLE_SEC, 
 				maxSpeed, 
 				Drivetrain.MAX_ACCEL, 
@@ -55,12 +57,13 @@ public class FollowPath extends Command {
 		left = new DistanceFollower(modifier.getLeftTrajectory());
 		right = new DistanceFollower(modifier.getRightTrajectory());
 
-		File trajectoryCsv = new File(Constants.PATHFINDER_DIR + waypoints.getClass().getSimpleName() + ".csv");
-		Pathfinder.writeToCSV(trajectoryCsv, trajectory);
+		//		File trajectoryCsv = new File(Constants.PATHFINDER_DIR + waypoints.getClass().getSimpleName() + ".csv");
+		//		Pathfinder.writeToCSV(trajectoryCsv, trajectory);
 
 	}
 
 	protected void initialize() {
+		System.out.println("In Follow Path init");
 		drive.resetSensors();
 		timer.reset();
 		timer.start();
@@ -88,22 +91,28 @@ public class FollowPath extends Command {
 	}
 
 	protected void execute() {
-		double leftMotorOutput = left.calculate(drive.getLeftEncoder().getDistance());
-		double rightMotorOutput = right.calculate(drive.getRightEncoder().getDistance());
+		System.out.println("In Follow Path Execute");
 
 		double gyroHeading = - drive.getHeading();    // gyro is clockwise, pathfinder counter-clockwise
 		double desiredHeading = Pathfinder.r2d(left.getHeading());  // Should also be in degrees
-		SmartDashboard.putNumber("Pathfinder/desiredHeading", desiredHeading);
+		SmartDashboard.putNumber("Pathfinder.desiredHeading", desiredHeading);
 
 		angleError = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
 		double angleErrorChange = lastAngleError - angleError;
 		lastAngleError = angleError;
-		SmartDashboard.putNumber("Pathfinder/angleError", angleError);
-		SmartDashboard.putNumber("Pathfinder/angleErrorChange", angleErrorChange);
+		SmartDashboard.putNumber("Pathfinder.angleError", angleError);
+		SmartDashboard.putNumber("Pathfinder.angleErrorChange", angleErrorChange);
+
+		double leftMotorOutput = left.calculate(drive.getLeftEncoder().getDistance()) - 
+				(angleKP * angleError - angleKD * angleErrorChange);
+		double rightMotorOutput = right.calculate(drive.getRightEncoder().getDistance()) + 
+				(angleKP * angleError - angleKD * angleErrorChange);
+		
+		SmartDashboard.putNumber("Pathfinder.leftMotorOutput", leftMotorOutput);
+		SmartDashboard.putNumber("Pathfinder.rightMotorOutput", rightMotorOutput);
 
 		//		System.out.println("Pathfinder at " + timer.get() + ", output: " + leftMotorOutput);
-		drive.normalizedTankDrive(leftMotorOutput - (angleKP * angleError - angleKD * angleErrorChange), 
-				rightMotorOutput + (angleKP * angleError - angleKD * angleErrorChange));
+		drive.normalizedTankDrive(leftMotorOutput, rightMotorOutput);
 	}
 
 	protected boolean isFinished() {
@@ -111,6 +120,7 @@ public class FollowPath extends Command {
 	}
 
 	protected void end() {
+		System.out.println("Ended Follow Path");
 		timer.stop();
 	}
 
