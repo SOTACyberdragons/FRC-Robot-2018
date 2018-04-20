@@ -22,7 +22,7 @@ public class Drivetrain extends Subsystem {
 	//Encoder specs: S4T-360-250-S-D (usdigital.com)
 	//S4T Shaft Encoder, 360 CPR, 1/4" Dia Shaft, Single-Ended, Default Torque
 	//Encoder Distance Constants
-	public final static double WHEELBASE_WIDTH = 24.4; //TODO need wheelbase width
+	public final static double WHEELBASE_WIDTH = 24.25;
 	public final static double WHEEL_DIAMETER = 6;
 	public final static double PULSE_PER_REVOLUTION = 360;
 	public final static double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / PULSE_PER_REVOLUTION;
@@ -175,6 +175,9 @@ public class Drivetrain extends Subsystem {
 		BoostFilter rightBoostFilter = new BoostFilter(tankRightBoost);
 		double boostedLeftOutput = leftBoostFilter.output(leftMotorOutput);
 		double boostedRightOutput = rightBoostFilter.output(rightMotorOutput);
+		
+		SmartDashboard.putNumber("Drivetrain.boostedLeftOutput", boostedLeftOutput);
+		SmartDashboard.putNumber("Drivetrain.boostedRightOutput", boostedRightOutput);
 
 		tankDrive(boostedLeftOutput, boostedRightOutput, false);
 	}
@@ -240,9 +243,6 @@ public class Drivetrain extends Subsystem {
 		rightEncoder.reset();
 	}
 
-	/**
-	 * @return rate, ticks per second
-	 */
 	public double getAverageEncoderRate() {
 		return ((leftEncoder.getRate() + rightEncoder.getRate())/2);
 	}
@@ -264,5 +264,3 @@ public class Drivetrain extends Subsystem {
 	}
 
 }
-
-
