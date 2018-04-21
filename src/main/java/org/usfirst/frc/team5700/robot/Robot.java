@@ -196,7 +196,7 @@ public class Robot extends IterativeRobot {
 //		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
 
 		autoChoice = chooser.getSelected();
-		SmartDashboard.putString("Selected Autonomous", chooser.getSelected().toString());
+		SmartDashboard.putString("Selected Autonomous", autoChoice.toString());
 
 		switchSide = Side.UNKNOWN;
 		scaleSide = Side.UNKNOWN;
