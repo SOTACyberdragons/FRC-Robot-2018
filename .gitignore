@@ -1,10 +1,19 @@
-/bin/
-*.jar
-*.class
-*.jar
+# ignore build artifacts
+bin/
+dist/
+build/
 
-*.jar
-/dist/
-/build/
-*.class
+# ignore dependencies
+libs/
+
+# ignore MacOS stuff
+**/.DS_Store
+
+# ignore IntelliJ configuration
+*.iml
+.idea/
+
+# ignore Jetson training cache
 *.tensorcache
+
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="FRC 5700 download dependencies" default="download">
+    <property file="build.properties"/>
+
+	<target name="download">
+		<mkdir dir="libs/"/>
+		<get src="${libsArchive.url}" dest="libs/Archive.zip" verbose="true"/>
+		<unzip src="libs/Archive.zip" dest="libs/"/>
+	</target>
+</project>
