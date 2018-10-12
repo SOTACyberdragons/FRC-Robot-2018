@@ -1,16 +1,34 @@
 
 package org.usfirst.frc.team5700.robot;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
+
+import org.usfirst.frc.team5700.robot.commands.AutoCenterToLeftSwitch;
+import org.usfirst.frc.team5700.robot.commands.AutoCenterToRightSwitch;
+import org.usfirst.frc.team5700.robot.commands.AutoCrossBaseline;
+import org.usfirst.frc.team5700.robot.commands.AutoDoNotMove;
+import org.usfirst.frc.team5700.robot.commands.AutoLeftSideScale;
+import org.usfirst.frc.team5700.robot.commands.AutoLeftSideSwitch;
+import org.usfirst.frc.team5700.robot.commands.AutoRightSideScale;
 import org.usfirst.frc.team5700.robot.commands.ResetArmEncoder;
 import org.usfirst.frc.team5700.robot.commands.ResetElevatorEncoder;
+import org.usfirst.frc.team5700.robot.commands.AutoRightSideSwitch;
+import org.usfirst.frc.team5700.robot.commands.DriveReplay;
+import org.usfirst.frc.team5700.robot.commands.ReplayWithCommands;
 import org.usfirst.frc.team5700.robot.subsystems.Arm;
 import org.usfirst.frc.team5700.robot.subsystems.AssistSystem;
-import org.usfirst.frc.team5700.robot.subsystems.BoxIntake;
+import org.usfirst.frc.team5700.robot.subsystems.Intake;
 import org.usfirst.frc.team5700.robot.subsystems.Climber;
 import org.usfirst.frc.team5700.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team5700.robot.subsystems.Elevator;
 import org.usfirst.frc.team5700.robot.subsystems.Grabber;
+import org.usfirst.frc.team5700.utils.CsvLogger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.command.Command;
@@ -29,22 +47,45 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	private Command autonomousCommand;
+	private String autoSelected;
+	private Command autoCommand;
 	public static Preferences prefs;
 
-	SendableChooser<Command> chooser;
+	SendableChooser<String> chooser;
 
 
 	public static OI oi;
 	public static DriveTrain drivetrain;
-	public static BoxIntake boxIntake;
+	public static Intake intake;
 	public static Elevator elevator;
 	public static Climber climber; 
 	public static Arm arm; 
 	public static Grabber grabber;
 	public static AssistSystem assistSystem;
-
-
+	
+	public static boolean switchOnRight;
+	public static boolean scaleOnRight;
+	public static boolean dropCube = false;
+	
+	String[] data_fields ={
+			"time",
+			"moveValue",
+			"rotateValue",
+			"leftMotorSpeed",
+			"rightMotorSpeed",
+			"speed",
+			"leftSpeed",
+			"rightSpeed",
+			"leftDistance",
+			"rightDistance",
+			"headingError",
+			"moveArmTo90"
+	};
+	private SendableChooser<String> recordModeChooser;
+	private static String recordMode;
+	private SendableChooser<String> replayChooser;
+	
+	public static CsvLogger csvLogger;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -57,7 +98,7 @@ public class Robot extends IterativeRobot {
 		
 		// Initialize all subsystems
 		drivetrain = new DriveTrain();
-		boxIntake = new BoxIntake();
+		intake = new Intake();
 		elevator = new Elevator();
 		climber = new Climber();
 		arm = new Arm();
@@ -71,11 +112,37 @@ public class Robot extends IterativeRobot {
 
 		// Show what command your subsystem is running on the SmartDashboard
 		SmartDashboard.putData(drivetrain);
-
-		SmartDashboard.putData("Reset Elevator Encoder", new ResetElevatorEncoder());	
-		SmartDashboard.putData("Reset Arm Encoder", new ResetArmEncoder());
 		
-
+		//Autonomous Chooser
+        chooser = new SendableChooser<String>();
+ 		chooser.addObject("Dont Move", "Dont Move");
+ 		chooser.addDefault("Cross Baseline", "Cross Baseline");
+ 		chooser.addObject("Center Switch", "Center Switch");
+ 		chooser.addObject("Right Side Switch", "Right Side Switch");
+ 		chooser.addObject("Left Side Switch", "Left Side Switch");
+		chooser.addObject("Replay Test", "Replay Test");
+		chooser.addObject("Left Side Switch or Scale", "Left Side Switch or Scale");
+ 		SmartDashboard.putData("Autonomous Chooser", chooser);
+ 		SmartDashboard.putData("Autonomous Chooser 2", chooser);
+		//autoSelected = chooser.getSelected();
+ 		
+		setupRecordMode();
+		listReplays();
+ 		
+ 		grabber.close();
+ 		
+		System.out.println("Instantiating CsvLogger...");
+		csvLogger = new CsvLogger();
+	}
+	
+	private void setupRecordMode() {
+		recordModeChooser = new SendableChooser<String>();
+		recordModeChooser.addDefault("Just Drive", "justDrive");
+		recordModeChooser.addObject("Replay", "replay");
+		SmartDashboard.putData("RecordMode", recordModeChooser);
+		SmartDashboard.putData("RecordMode 2", recordModeChooser);
+		SmartDashboard.putString("Replay Name", "MyReplay");
+		recordMode = recordModeChooser.getSelected();
 	}
 
 	/**
@@ -85,12 +152,15 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
+		grabber.close();
 
 	}
 
+
 	@Override
 	public void disabledPeriodic() {
-		Scheduler.getInstance().run();
+		grabber.close();
+		csvLogger.close();
 	}
 
 	/**
@@ -106,18 +176,76 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
-
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
-		 */
-
-		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
-			autonomousCommand.start();
+		
+		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
+		
+		dropCube = false;
+		grabber.close();
+		autoSelected = chooser.getSelected();
+		
+		boolean switchOnRight = true;
+		boolean scaleOnRight = true;
+		
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+         if(gameData.length() > 0) {
+        	 	if(gameData.charAt(0) == 'L') {
+        	 		switchOnRight = false;
+        	 	}
+        	 	if (gameData.charAt(1) == 'L') {
+        	 		scaleOnRight = false;
+        	 	}
+         }
+         
+         switch (autoSelected) {
+         	case "Dont Move":
+         		autoCommand = new AutoDoNotMove();
+         		break;
+         	case "Cross Baseline":
+         		autoCommand = new AutoCrossBaseline();
+         		System.out.print("Starting Cross Baseline command");
+         		//autoCommand = new AutoRightSideSwitch();
+         		break;
+         	case "Center Switch":
+         		if (switchOnRight) {
+         			autoCommand = new AutoCenterToRightSwitch();
+         		} else {
+         			autoCommand = new AutoCenterToLeftSwitch();
+         		}
+         		break;
+         	case "Right Side Switch":
+         		if (switchOnRight) {
+         			autoCommand = new AutoRightSideSwitch();
+         		} else {
+         			autoCommand = new AutoCrossBaseline();
+         		}
+         		break;
+         	case "Left Side Switch":
+         		if (!switchOnRight) {
+         			autoCommand = new AutoLeftSideSwitch();
+         		} else {
+         			autoCommand = new AutoCrossBaseline();
+         		}
+         		break;
+         	case "Replay Test":
+         		autoCommand = new DriveReplay(replayChooser.getSelected());
+         		break;
+         	case "Left Side Switch or Scale":
+         		if (!scaleOnRight) {
+         				autoCommand = new AutoLeftSideScale();
+         		} else if (!switchOnRight) {
+         			autoCommand = new AutoLeftSideSwitch();
+         		} else {
+         			autoCommand = new AutoCrossBaseline();
+         		}
+         		break;
+         	default:
+         		System.out.print("Starting default command");
+         		autoCommand = new AutoCrossBaseline();
+         }
+         
+         //autoCommand = new DriveReplay();
+         autoCommand.start();
 	}
 
 	/**
@@ -126,6 +254,44 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+		
+	
+		//Drivetrain
+		SmartDashboard.putNumber("Drivetrain speed in per s", drivetrain.getAverageEncoderRate());
+		SmartDashboard.putNumber("Right encoder distance", drivetrain.getRightEncoder().getDistance());
+		SmartDashboard.putNumber("Left encoder distance", drivetrain.getLeftEncoder().getDistance());
+		
+		//Elevator
+		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
+		
+		//Arm
+		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
+		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
+	}
+	
+	private void listReplays() {
+		System.out.println("Listing replays...");
+		replayChooser = new SendableChooser<String>();
+		Iterator<Path> replayFiles = null;
+		try {
+			replayFiles = Files.newDirectoryStream(Paths.get(Constants.DATA_DIR), "*.rpl").iterator();
+			if (replayFiles.hasNext()) {
+				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
+				replayChooser.addDefault(replayFile, replayFile);
+			}
+			while (replayFiles.hasNext()) {
+				String replayFile = replayFiles.next().getFileName().toString().replaceFirst("[.][^.]+$", "");
+				System.out.println(replayFile);
+				replayChooser.addObject(replayFile, replayFile);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		SmartDashboard.putData("ReplaySelector", replayChooser);
+		SmartDashboard.putData("ReplaySelector 2", replayChooser);
 	}
 
 	@Override
@@ -134,8 +300,16 @@ public class Robot extends IterativeRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		if (autonomousCommand != null)
-			autonomousCommand.cancel();
+		if (autoCommand != null)
+			autoCommand.cancel();
+		
+		setupRecordMode();
+		listReplays();
+
+		recordMode = recordModeChooser.getSelected();
+
+		String newReplayName = SmartDashboard.getString("Replay Name", "MyReplay");
+		csvLogger.init(data_fields, Constants.DATA_DIR, recordMode.equals("replay"), newReplayName);
 	}
 
 	/**
@@ -145,16 +319,38 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();	
 
-		SmartDashboard.putData("Reset Elevator Encoder", new ResetElevatorEncoder());	
-		SmartDashboard.putData("Reset Arm Encoder", new ResetArmEncoder());
-		
+		//Drivetrain
+		SmartDashboard.putNumber("Drivetrain speed in per s", drivetrain.getAverageEncoderRate());
+		SmartDashboard.putNumber("Right encoder distance", drivetrain.getRightEncoder().getDistance());
+		SmartDashboard.putNumber("Left encoder distance", drivetrain.getLeftEncoder().getDistance());
+
 		SmartDashboard.putNumber("Accelerometer X-axis", drivetrain.getXAccel());
 		SmartDashboard.putNumber("Accelerometer Y-axis", drivetrain.getYAccel());
 		SmartDashboard.putNumber("Accelerometer Z-axis", drivetrain.getZAccel());
-		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVolatage());
-		SmartDashboard.putNumber("Arm Encoder Ticks", arm.getRawEncoderTicks());
+		
+		SmartDashboard.putNumber("Gyro Degrees", drivetrain.getHeading());
+		
+		//Intake
+		SmartDashboard.putBoolean("Front Break Beam", intake.getFrontBreakBeam());
+		SmartDashboard.putBoolean("Back Break Beam", intake.getBackBreakBeam());
+		SmartDashboard.putBoolean("In Vault Mode", intake.inVaultMode());
+		
+		//Elevator 
+		SmartDashboard.putNumber("Elevator Height", elevator.getHeight());
+		SmartDashboard.putNumber("Elevator Encoder Ticks", elevator.getEncoderTicks());
+		SmartDashboard.putNumber("Elevator Encoder Velocity", elevator.getVelocityTicks());
+		SmartDashboard.putNumber("Elevator Talon Output", elevator.getTalonOutputVoltage());
+		SmartDashboard.putBoolean("At Bottom Limit ", elevator.atBottomLimit());;
+		SmartDashboard.putBoolean("At Top Limit ", elevator.atTopLimit());
+		SmartDashboard.putBoolean("At Bottom Limit ", elevator.atBottomLimit());;
+		SmartDashboard.putBoolean("At Top Limit ", elevator.atTopLimit());
+		SmartDashboard.putBoolean("Limits Overriden ", oi.overrideLimits());
+													
+		// Arm
+		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
 		SmartDashboard.putNumber("Arm Raw Angle Deg", arm.getRawAngle());
 		SmartDashboard.putNumber("ArmFF", arm.getFeedForward());
+		SmartDashboard.putNumber("Arm Normalized Angle ", arm.get180NormalizedAngle());
 	}
 
 	/**
@@ -164,4 +360,9 @@ public class Robot extends IterativeRobot {
 	public void testPeriodic() {
 		LiveWindow.run();
 	}
+	
+	public static String recordMode() {
+		return recordMode;
+	}
+
 }

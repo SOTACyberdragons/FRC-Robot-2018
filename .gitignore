@@ -8,3 +8,7 @@
 /build/
 *.class
 *.tensorcache
+*.swp
+*.jar
+*.class
+*.jar

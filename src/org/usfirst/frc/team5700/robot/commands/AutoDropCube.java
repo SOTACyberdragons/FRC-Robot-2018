@@ -7,15 +7,14 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ReleaseAssistArm extends Command {
+public class AutoDropCube extends Command {
 
-    public ReleaseAssistArm() {
-       requires(Robot.assistSystem);
+    public AutoDropCube() {
+        requires(Robot.grabber);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    		Robot.assistSystem.releaseAssist();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -24,17 +23,18 @@ public class ReleaseAssistArm extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return Robot.dropCube;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    		Robot.assistSystem.holdAssist();
+    		Robot.grabber.open();
+    		Robot.dropCube = false;
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
+    		end();
     }
 }

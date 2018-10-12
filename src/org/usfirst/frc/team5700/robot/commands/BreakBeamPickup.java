@@ -7,19 +7,24 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ReleaseAssistArm extends Command {
+public class BreakBeamPickup extends Command {
 
-    public ReleaseAssistArm() {
-       requires(Robot.assistSystem);
+	boolean startedPickup = false;
+	
+    public BreakBeamPickup() {
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    		Robot.assistSystem.releaseAssist();
+    		startedPickup = false;
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
+    		if (!startedPickup && Robot.intake.getBackBreakBeam()) {
+    			startedPickup = true;
+    			new PickupCube().start();
+    		}
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -29,12 +34,12 @@ public class ReleaseAssistArm extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    		Robot.assistSystem.holdAssist();
+    		startedPickup = false;
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	end();
+    		end();
     }
 }

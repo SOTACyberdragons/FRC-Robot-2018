@@ -4,6 +4,7 @@ import org.usfirst.frc.team5700.robot.Constants;
 import org.usfirst.frc.team5700.robot.Instrum;
 import org.usfirst.frc.team5700.robot.Robot;
 import org.usfirst.frc.team5700.robot.commands.MoveArmWithJoystick;
+import org.usfirst.frc.team5700.robot.subsystems.Arm.ArmCollisionBounds;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -26,6 +27,12 @@ public class Arm extends Subsystem {
 	public final double encoderMaxSpeed = 33000; //ticks per 100 ms
 	public double wCubeMaxNominalOutput; //Maximum nominal output, when arm is horizontal to ground
 	public double noCubeMaxNominalOutput;
+
+	private double dangerOfCollisionHeight = 14;
+	private double collisionAngle = 50;
+	
+	public ArmCollisionBounds withCubeBounds = new ArmCollisionBounds(28.5, 40, 3); //TODO find values
+	public ArmCollisionBounds noCubeBounds = new ArmCollisionBounds(14, 40, 5); //TODO find values
 	
 	public Arm() {
 		
@@ -142,33 +149,71 @@ public class Arm extends Subsystem {
 //    }
     
     public void moveToAngle(double targetAngleDeg) {
-    		double currentAngleDeg = getRawAngle();
-    		double angleToUse;
-    		
-    		double choiceA = targetAngleDeg + (currentAngleDeg > 0 ? 0 : -360) + 360 * Math.floor((currentAngleDeg/360));
-    		double choiceB = choiceA + (choiceA < currentAngleDeg ? 360 : -360);
-    		
-    		if (Math.abs(currentAngleDeg - choiceA) < Math.abs(currentAngleDeg - choiceB)) {
-    			angleToUse = choiceA;
-    		} else {
-    			angleToUse = choiceB;
-    		}
-    		
-    		_talon.set(ControlMode.MotionMagic, angleToUse * ticksPerDeg);
+    	
+	    	double currentAngle = getRawAngle();
+	    	double closestAngle = getClosestAngle(currentAngle, targetAngleDeg);
+	   		ArmCollisionBounds bounds = Robot.grabber.hasCube() ? withCubeBounds: noCubeBounds;
+	   		
+	   		if (Robot.elevator.getHeight() < bounds.heightIn
+	   				&& Math.abs(targetAngleDeg) < bounds.outsideAngle
+	   				&& !((Math.abs(targetAngleDeg) < bounds.insideAngle))) {
+	    		
+	    		if ((currentAngle - closestAngle) < 0) {
+	    			closestAngle = getClosestAngle(currentAngle, -collisionAngle);
+	    		} else {
+	    			closestAngle = getClosestAngle(currentAngle, collisionAngle);
+	    		}
+	    	}
+	    
+	   		_talon.set(ControlMode.MotionMagic, closestAngle * ticksPerDeg);
     }
     
     /**
-     * @return angle in degrees, not reseting at 360
+     * @return raw angle in degrees, not reseting at 360
      */
     public double getRawAngle() {
     		return _talon.getSelectedSensorPosition(0) / ticksPerDeg;
     }
     
     /**
-     * @return angle in degrees between 0 and 360
+     * @return angle in degrees between -180 and 180
      */
-    public double getNormalizedAngle() {
-    		return Math.abs((_talon.getSelectedSensorPosition(0) / ticksPerDeg) % 360);
+    public double get180NormalizedAngle() {
+    		double angle = getRawAngle() % 360;
+    		
+    		if (angle < -180) {
+    			angle += 360;
+    		} else if (angle > 180) {
+    			angle -= 360;
+    		}
+   
+    		return angle;
+    }
+    
+    private double getClosestAngle(double currentAngle, double targetAngle) {
+    		
+    		int delta = (int) Math.floor(currentAngle/360);
+	    	double normalizedCurrentAngle = currentAngle % 360;
+	    	normalizedCurrentAngle += normalizedCurrentAngle < 0 ? 360 : 0;
+	    
+	    	if (normalizedCurrentAngle < (targetAngle - 180)) {
+	    		delta += -1;
+	    	} else if (normalizedCurrentAngle > (targetAngle + 180)) {
+	    		delta += 1;
+	    	} 
+	    	
+	    	return targetAngle + 360 * delta;	
+	}
+    
+    public class ArmCollisionBounds {
+    	
+    	public double heightIn, outsideAngle, insideAngle;
+    	
+    	public ArmCollisionBounds(double heightIn, double outsideAngle, double insideAngle) {
+    		this.heightIn = heightIn;
+    		this.outsideAngle = outsideAngle;
+    		this.insideAngle = insideAngle;
+		}
     }
 }
 

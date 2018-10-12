@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5700.robot;
 
+import org.usfirst.frc.team5700.robot.commands.BreakBeamPickup;
 import org.usfirst.frc.team5700.robot.commands.ClimberDown;
 import org.usfirst.frc.team5700.robot.commands.ClimberUp;
 import org.usfirst.frc.team5700.robot.commands.ExtendIntake;
@@ -9,15 +10,16 @@ import org.usfirst.frc.team5700.robot.commands.ResetArmEncoder;
 import org.usfirst.frc.team5700.robot.commands.IntakeBox;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpinIn;
 import org.usfirst.frc.team5700.robot.commands.IntakeSpitOut;
+import org.usfirst.frc.team5700.robot.commands.MoveArmAndElevatorDistance;
 import org.usfirst.frc.team5700.robot.commands.MoveArmToAngle;
+import org.usfirst.frc.team5700.robot.commands.MoveElevatorWithJoystick;
 import org.usfirst.frc.team5700.robot.commands.MoveElevatorDistance;
+import org.usfirst.frc.team5700.robot.commands.PickupCube;
 import org.usfirst.frc.team5700.robot.commands.ReleaseAssistArm;
 import org.usfirst.frc.team5700.robot.commands.ResetElevatorEncoder;
-
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -25,9 +27,9 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class OI {
 
-	private boolean toggle = false;
+	private boolean limitsAreOverriden = false;
 	private boolean hasBeenPressed = false;
-
+	
 	private Joystick driveRightStick = new Joystick(0);
 	private Joystick driveLeftStick = new Joystick(1);
 	private Joystick auxRightStick = new Joystick(2);
@@ -35,55 +37,117 @@ public class OI {
 	
 	// Setting squaredInput to true decreases the sensitivity for tankdrive at lower speeds
 	private boolean squaredInput = true;
-
+	//Intake
 	JoystickButton spinIntakeIn;
 	JoystickButton spitIntakeOut;
 	JoystickButton extendIntake;
+	
+	//Grabber
 	JoystickButton releaseCube;
 	JoystickButton grabCube;
+	
+	//Climber
 	JoystickButton climberUp;
 	JoystickButton climberDown;
-	JoystickButton moveElevatorDistance; 
+	
+	//Arm
+	JoystickButton moveArmTo90;
+	
+	//Elevator
+	//JoystickButton moveElevatorDistance;
+	
+	//Assist 
 	JoystickButton releaseAssist;
+	
+	//Lifter Automation Buttons
+	JoystickButton moveToPickUpPosition;
+	JoystickButton pickupCube;
+	JoystickButton moveToCruise;
+	JoystickButton moveElevatorToTop;
+	JoystickButton breakBeamPickup;
+
+
+	//Operations Buttons
 	JoystickButton zeroElevatorEncoder;
-	JoystickButton resetArmEncoder;
-	JoystickButton moveArmToAngle;
+	JoystickButton zeroArmEncoder;
+	JoystickButton overrideLimits;
+	public JoystickButton vaultMode;
 	
 	public OI() {
-		spinIntakeIn = new JoystickButton (ButtonMap.SPIN_INTAKE_IN.joystick, ButtonMap.SPIN_INTAKE_IN.buttonNum);
-		spitIntakeOut = new JoystickButton (ButtonMap.SPIN_INTAKE_OUT.joystick, ButtonMap.SPIN_INTAKE_IN.buttonNum);
-		extendIntake = new JoystickButton (ButtonMap.EXTEND_INTAKE.joystick, ButtonMap.EXTEND_INTAKE.buttonNum);
-		releaseCube = new JoystickButton(ButtonMap.GRABBER_OPEN.joystick, ButtonMap.GRABBER_OPEN.buttonNum);
-		grabCube = new JoystickButton(ButtonMap.GRABBER_CLOSE.joystick, ButtonMap.GRABBER_CLOSE.buttonNum);
-		climberUp = new JoystickButton(ButtonMap.CLIMBER_UP.joystick, ButtonMap.CLIMBER_UP.buttonNum);
-		climberDown = new JoystickButton(ButtonMap.CLIMBER_DOWN.joystick, ButtonMap.CLIMBER_DOWN.buttonNum);
-		moveElevatorDistance = new JoystickButton(ButtonMap.MOVE_ELEVATOR_DISTANCE.joystick, ButtonMap.MOVE_ELEVATOR_DISTANCE.buttonNum);
-		releaseAssist = new JoystickButton(ButtonMap.ASSIST_RELEASE.joystick, ButtonMap.ASSIST_RELEASE.buttonNum);
-		zeroElevatorEncoder  = new JoystickButton(ButtonMap.ZERO_ELEVATOR_ENCODER.joystick, ButtonMap.ZERO_ELEVATOR_ENCODER.buttonNum);
+		/**
+		 * Set Buttons
+		 */
+		//Intake
+		spinIntakeIn = new JoystickButton (driveRightStick, ButtonMap.SPIN_INTAKE_IN);
+		spitIntakeOut = new JoystickButton (driveLeftStick, ButtonMap.SPIN_INTAKE_OUT);
+		extendIntake = new JoystickButton (driveRightStick, ButtonMap.EXTEND_INTAKE);
+		vaultMode = new JoystickButton(driveRightStick, ButtonMap.VAULT_MODE);
 		
-		//set commands
+		//Grabber
+		releaseCube = new JoystickButton(auxRightStick, ButtonMap.GRABBER_OPEN);
+		grabCube = new JoystickButton(auxRightStick, ButtonMap.GRABBER_CLOSE);
+		
+		//Climber
+		climberUp = new JoystickButton(auxRightStick, ButtonMap.CLIMBER_UP);
+		climberDown = new JoystickButton(auxRightStick, ButtonMap.CLIMBER_DOWN);
+		
+		//Arm
+		moveArmTo90 = new JoystickButton(auxLeftStick, ButtonMap.MOVE_ARM_TO_90);
+		
+		//Elevator
+		//moveElevatorDistance = new JoystickButton(auxLeftStick, ButtonMap.MOVE_ELEVATOR_DISTANCE);
+		
+		//Assist
+		releaseAssist = new JoystickButton(auxLeftStick, ButtonMap.ASSIST_RELEASE);
+		
+		//Lifter Automation Buttons
+		moveToPickUpPosition = new JoystickButton(auxLeftStick, ButtonMap.MOVE_TO_PICK_UP_POSITION);
+		pickupCube = new JoystickButton(auxLeftStick, ButtonMap.PICK_UP_BOX);
+		moveToCruise = new JoystickButton(auxRightStick, ButtonMap.MOVE_TO_CRUISE_POSITION);
+		moveElevatorToTop = new JoystickButton(auxRightStick, ButtonMap.MOVE_ELEVATOR_TO_TOP);
+		breakBeamPickup = new JoystickButton(auxLeftStick, ButtonMap.BREAK_BREAM_PICKUP);
+		
+		//Operations Buttons
+		zeroElevatorEncoder  = new JoystickButton(auxRightStick, ButtonMap.ZERO_ELEVATOR_ENCODER);
+		zeroArmEncoder = new JoystickButton(auxLeftStick, ButtonMap.ZERO_ARM_ENCODER);
+		overrideLimits = new JoystickButton(auxRightStick, ButtonMap.OVERRIDE_LIMITS);
+		
+		
+		/**
+		 * Set Commands
+		 */
 		//box intake
 		spinIntakeIn.whileHeld(new IntakeSpinIn());
 		extendIntake.whileHeld(new ExtendIntake());
 		spitIntakeOut.whileHeld(new IntakeSpitOut());
 		
-		//Elevator
-		moveElevatorDistance.whenPressed(new MoveElevatorDistance(1));
-		zeroElevatorEncoder.whenPressed(new ResetElevatorEncoder());
-		
-//		//grabber
+		//grabber
 		grabCube.whenPressed(new GrabCube());
 		releaseCube.whenPressed(new ReleaseCube());
+		
 		//climber
 		climberUp.whileHeld(new ClimberUp());
 		climberDown.whileHeld(new ClimberDown());
+		
+		//arm
+		moveArmTo90.whileHeld(new MoveArmToAngle(90));
+		
+		//elevator
+		//moveElevatorDistance.whileHeld(new MoveElevatorDistance(30));
+		
 		//climber assist
 		releaseAssist.whileHeld(new ReleaseAssistArm());
 		
-		//arm 
-		resetArmEncoder.whenPressed(new ResetArmEncoder());
-		moveArmToAngle.whileHeld(new MoveArmToAngle(90));
-		
+		//Lifter Automation Buttons
+		moveToPickUpPosition.whileHeld(new MoveArmAndElevatorDistance(16.5, 0));
+		pickupCube.whenPressed(new PickupCube());
+		moveToCruise.whileHeld(new MoveArmAndElevatorDistance(2, 180, 0.5, 0));
+		moveElevatorToTop.whileHeld(new MoveElevatorDistance(58));
+		breakBeamPickup.whileHeld(new BreakBeamPickup());
+				
+		//Operations Buttons
+		zeroElevatorEncoder.whenPressed(new ResetElevatorEncoder());
+		zeroArmEncoder.whenPressed(new ResetArmEncoder());
 	}
 	
 	public Joystick getDriveLeftStick() {
@@ -104,6 +168,26 @@ public class OI {
 
 	public boolean getSquaredInput() {
 		return squaredInput;
+	}
+	
+	public double getRightStickThrottle() {
+		return (driveRightStick.getThrottle() + 1)/2.0;
+	}
+	
+	public boolean overrideLimits() {
+		if (overrideLimits.get() && !hasBeenPressed) {
+			limitsAreOverriden = !limitsAreOverriden;
+			hasBeenPressed = true;
+		}
+		
+		if(!overrideLimits.get()) {
+			hasBeenPressed = false;
+		}
+		return limitsAreOverriden;
+	}
+	
+	public JoystickButton moveArmTo90() {
+		return moveArmTo90;
 	}
 }
 

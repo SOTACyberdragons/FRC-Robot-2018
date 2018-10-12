@@ -1,22 +1,51 @@
 package org.usfirst.frc.team5700.robot;
 
-import org.usfirst.frc.team5700.utils.ButtonLocator;
-
 public class ButtonMap {
 		
+		/**
+		 * Primary Driver Buttons
+		 */
 		//Intake
-		public static final ButtonLocator EXTEND_INTAKE = new ButtonLocator(1, Robot.oi.getDriveRightStick());
-		public static final ButtonLocator SPIN_INTAKE_IN = new ButtonLocator(3, Robot.oi.getDriveRightStick());
-		public static final ButtonLocator SPIN_INTAKE_OUT = new ButtonLocator(2, Robot.oi.getDriveRightStick());
-//		//Grabber 
-		public static final ButtonLocator GRABBER_OPEN = new ButtonLocator(1, Robot.oi.getAuxRightStick());
-		public static final ButtonLocator GRABBER_CLOSE = new ButtonLocator(2, Robot.oi.getAuxRightStick());
+		public static final int EXTEND_INTAKE = 1; //rightstick
+		public static final int SPIN_INTAKE_IN = 2; // //Robot.oi.getDriveRightStick());
+		public static final int SPIN_INTAKE_OUT = 2; ////Robot.oi.getDriveLeftStick());
+		public static final int VAULT_MODE = 4; //Robot.oi.getDriveRightStick());
+		
+		/**
+		 * Auxillary Driver Buttons
+		 */
+		//Grabber 
+		public static final int GRABBER_OPEN = 2; //Robot.oi.getAuxRightStick());
+		public static final int GRABBER_CLOSE = 1; //Robot.oi.getAuxRightStick());
+		
 		//Climber
-		public static final ButtonLocator CLIMBER_UP = new ButtonLocator(2, Robot.oi.getAuxRightStick());
-		public static final ButtonLocator CLIMBER_DOWN = new ButtonLocator(2, Robot.oi.getAuxLeftStick());
+		public static final int CLIMBER_UP = 10; //Robot.oi.getAuxRightStick());
+		public static final int CLIMBER_DOWN = 9; //Robot.oi.getAuxRightStick());
+		
 		//Climber Assist
-		public static final ButtonLocator ASSIST_RELEASE = new ButtonLocator(1, Robot.oi.getAuxRightStick());
-		public static final ButtonLocator ZERO_ELEVATOR_ENCODER = new ButtonLocator(6, Robot.oi.getAuxRightStick());
-		//ELEVATOR
-		public static final ButtonLocator MOVE_ELEVATOR_DISTANCE = new ButtonLocator(5, Robot.oi.getDriveRightStick());
+		public static final int ASSIST_RELEASE = 11; //Robot.oi.getAuxLeftStick());
+		
+		//Arm
+		public static final int MOVE_ARM_TO_90 = 12; // auxLeftStick
+		
+		//Elevator
+		//public static final int MOVE_ELEVATOR_DISTANCE = 6; // AuxLeftStick
+		//Lifter Placer Automation
+		public static final int MOVE_TO_PICK_UP_POSITION = 3; //Robot.oi.getAuxLeftStick());
+		public static final int PICK_UP_BOX = 4; //Robot.oi.getAuxLeftStick());
+		public static final int MOVE_TO_CRUISE_POSITION = 3; //Robot.oi.getAuxRightStick();
+		public static final int MOVE_ELEVATOR_TO_TOP = 4; //Robot.oi.getAuxRightStick();
+		public static final int BREAK_BREAM_PICKUP = 6; //Robot.oi.getAuxLeftStick());
+		
+		//TODO switch break beam pickup and pick up box buttons
+		
+		/**
+		 * Operations Buttons
+		 */
+		//Zero Encoders
+		public static final int ZERO_ARM_ENCODER = 7; //Robot.oi.getAuxLeftStick());
+		public static final int ZERO_ELEVATOR_ENCODER = 7; //Robot.oi.getAuxRightStick());
+		
+		public static final int OVERRIDE_LIMITS = 8; //Robot.oi.getAuxRightStick());
+		
 }

@@ -10,15 +10,15 @@ import edu.wpi.first.wpilibj.command.Command;
 public class IntakeBox extends Command {
 
     public IntakeBox() {
-    	requires(Robot.boxIntake);
+    	requires(Robot.intake);
     }
 
     protected void initialize() {
-    	Robot.boxIntake.extendBoth();
+    	Robot.intake.extendBoth();
     }
 
     protected void execute() {
-    	Robot.boxIntake.spinMotorsIn();
+    	Robot.intake.spinMotorsIn();
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -28,8 +28,8 @@ public class IntakeBox extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.boxIntake.retractBoth();
-    	Robot.boxIntake.stopMotors();
+    	Robot.intake.retractBoth();
+    	Robot.intake.stopMotors();
     }
 
     // Called when another command which requires one or more of the same

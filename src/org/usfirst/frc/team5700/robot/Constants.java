@@ -26,4 +26,12 @@ public class Constants {
 	 */
 	public static final int TalonMaxOutput = 1023;
 	public static final int VersaEncoderTPR = 4096;
+	
+	/**
+	 * Roborio
+	 */
+	
+	public static final double CYCLE_SEC = 0.020; //20 milliseconds
+	
+	public static final String DATA_DIR = "/home/lvuser/data_capture/";
 }
