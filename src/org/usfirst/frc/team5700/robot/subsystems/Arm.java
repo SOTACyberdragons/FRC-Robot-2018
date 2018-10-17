@@ -35,7 +35,7 @@ public class Arm extends Subsystem {
 	private double collisionAngle = 50;
 	
 	public ArmCollisionBounds withCubeBounds = new ArmCollisionBounds(28.5, 40, 3);
-	public ArmCollisionBounds noCubeBounds = new ArmCollisionBounds(14, 40, 5);
+	public ArmCollisionBounds noCubeBounds = new ArmCollisionBounds(14.69, 40, 5);
 	
 	public Arm() {
 		
