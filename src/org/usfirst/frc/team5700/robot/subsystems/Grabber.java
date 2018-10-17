@@ -22,13 +22,13 @@ public class Grabber extends Subsystem {
 	
 	public void close() {
 //		piston.set(Value.kReverse);
-		piston.set(true);
+		piston.set(false);
 		hasCube = true;
 	}
 	
 	public void open() {
 //		piston.set(Value.kForward);
-		piston.set(false);
+		piston.set(true);
 		hasCube = false;
 	}
    
