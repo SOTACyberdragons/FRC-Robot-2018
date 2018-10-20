@@ -195,6 +195,8 @@ public class Robot extends IterativeRobot {
 
 //		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
 
+		Scheduler.getInstance().run();
+		
 		autoChoice = chooser.getSelected();
 		SmartDashboard.putString("Selected Autonomous", autoChoice.toString());
 
@@ -222,8 +224,10 @@ public class Robot extends IterativeRobot {
 		switch (autoChoice) {
 			case DO_NOT_MOVE:
 				autoCommand = new AutoDoNotMove();
+				break;
 			case CROSS_BASELINE:
 				autoCommand = autoCrossBaseline;
+				break;
 			case CENTER_SWITCH:
 				if (switchSide == Side.RIGHT) {
 					autoCommand = autoCenterToRightSwitch;
@@ -328,6 +332,14 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		/* 
+		 * Fixed autonomous by putting Scheduler.getInstance().run() method in the beginning of 
+		 * autonomous init.
+		 * 
+		 * Teleop was working and one of the only differences was that method 
+		 * in the beginning of Teleop periodic. All autonomous code works now after resetting the 
+		 * code.  
+		 */
 		Scheduler.getInstance().run();
 		
 		SmartDashboard.putNumber("Right Encoder Distance", drivetrain.getRightEncoder().getDistance());

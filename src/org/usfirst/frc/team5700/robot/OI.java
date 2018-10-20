@@ -61,6 +61,7 @@ public class OI {
 	JoystickButton moveToPickUpPosition;
 	JoystickButton pickupCube;
 	JoystickButton moveToCruise;
+	JoystickButton moveElevatorToSwitch;
 	JoystickButton moveElevatorToTop;
 	JoystickButton breakBeamPickup;
 
@@ -102,6 +103,7 @@ public class OI {
 		moveToPickUpPosition = new JoystickButton(auxLeftStick, ButtonMap.MOVE_TO_PICK_UP_POSITION);
 		pickupCube = new JoystickButton(auxLeftStick, ButtonMap.PICK_UP_BOX);
 		moveToCruise = new JoystickButton(auxRightStick, ButtonMap.MOVE_TO_CRUISE_POSITION);
+		moveElevatorToSwitch = new JoystickButton(auxRightStick, ButtonMap.MOVE_ELEVATOR_TO_SWITCH);
 		moveElevatorToTop = new JoystickButton(auxRightStick, ButtonMap.MOVE_ELEVATOR_TO_TOP);
 		breakBeamPickup = new JoystickButton(auxLeftStick, ButtonMap.BREAK_BREAM_PICKUP);
 		
@@ -140,8 +142,10 @@ public class OI {
 		moveToPickUpPosition.whileHeld(new MoveArmAndElevatorDistance(16.5, 0));
 		pickupCube.whenPressed(new PickupCube());
 		moveToCruise.whileHeld(new MoveArmAndElevatorDistance(2, 180, 0.5, 0));
+		moveElevatorToSwitch.whileHeld(new MoveElevatorDistance(23));
 		moveElevatorToTop.whileHeld(new MoveElevatorDistance(58));
 		breakBeamPickup.whileHeld(new BreakBeamPickup());
+		
 				
 		//Operations Buttons
 		zeroElevatorEncoder.whenPressed(new ResetElevatorEncoder());
