@@ -81,7 +81,7 @@ public class Intake extends Subsystem {
 		
 		return inVaultMode;
 	}
-
+	
 	@Override
 	protected void initDefaultCommand() {
 	}

@@ -13,6 +13,7 @@ import org.usfirst.frc.team5700.robot.commands.AutoCenterSwitch;
 import org.usfirst.frc.team5700.robot.commands.AutoCrossBaseline;
 import org.usfirst.frc.team5700.robot.commands.AutoCrossBaselineCenter;
 import org.usfirst.frc.team5700.robot.commands.AutoDoNotMove;
+import org.usfirst.frc.team5700.robot.commands.AutoFarSideScalePlatform;
 import org.usfirst.frc.team5700.robot.commands.AutoSideScale;
 import org.usfirst.frc.team5700.robot.commands.AutoSideSwitch;
 //import org.usfirst.frc.team5700.robot.commands.DriveReplay;
@@ -90,6 +91,7 @@ public class Robot extends IterativeRobot {
 	//Right Side
 	private Command autoRightSideSwitch;
 	private Command autoRightSideScale;
+	private Command autoRightFarSideScalePlatform;
 
 	//Left Side
 	private Command autoLeftSideScale;
@@ -119,6 +121,7 @@ public class Robot extends IterativeRobot {
 		//Left Side
 		autoLeftSideSwitch = new AutoSideSwitch(Side.LEFT);
 		autoLeftSideScale = new AutoSideScale(Side.LEFT);
+		autoRightFarSideScalePlatform = new AutoFarSideScalePlatform();
 		System.out.println("Done initializing path commands.");
 		
 		SmartDashboard.putData("autoCrossBaselineCenter", autoCrossBaselineCenter);
@@ -129,6 +132,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("autoRightSideScale", autoRightSideScale);
 		SmartDashboard.putData("autoLeftSideSwitch", autoLeftSideSwitch);
 		SmartDashboard.putData("autoLeftSideScale", autoLeftSideScale);
+		SmartDashboard.putData("autoRightFarSideScalePlatform", autoRightFarSideScalePlatform);
+		
 	}
 
 	/**
@@ -166,6 +171,7 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Right Side Scale Priority", AutoChoice.RIGHT_SCALE_PRIORITY);
 		chooser.addObject("Left Side Switch Priority", AutoChoice.LEFT_SWITCH_PRIORITY);
 		chooser.addObject("Left Side Scale Priority", AutoChoice.LEFT_SCALE_PRIORITY);
+		chooser.addObject("Right Side Far Scale Platform Priority", AutoChoice.LEFT_FAR_SIDE_SCALE_PLATFORM);
 //		chooser.addObject("Replay Test", AutoChoice.REPLAY_TEST);
 		SmartDashboard.putData("Autonomous Chooser", chooser);
 
@@ -195,6 +201,14 @@ public class Robot extends IterativeRobot {
 
 //		csvLogger.init(data_fields, Constants.DATA_DIR, false, null);
 
+		/* 
+		 * Fixed autonomous by putting Scheduler.getInstance().run() method in the beginning of 
+		 * autonomous init.
+		 * 
+		 * Teleop was working and one of the only differences was that method 
+		 * in the beginning of Teleop periodic. All autonomous code works now after resetting the 
+		 * code.  
+		 */
 		Scheduler.getInstance().run();
 		
 		autoChoice = chooser.getSelected();
@@ -277,6 +291,12 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break;
+				
+			case LEFT_FAR_SIDE_SCALE_PLATFORM:
+				System.out.println("Picked far side platform scale");
+				autoCommand = autoRightFarSideScalePlatform;
+				System.out.println("set far side platform scale");
+				break;
 		
 //			case REPLAY_TEST:
 //				autoCommand = new DriveReplay(replayChooser.getSelected());
@@ -288,7 +308,9 @@ public class Robot extends IterativeRobot {
 		}
 
 		SmartDashboard.putString("Autonomous Command", autoCommand.getName());
+		System.out.println("Starting far side platform scale");
 		autoCommand.start();
+		System.out.println("Finished far side platform scale");
 	}
 
 	/**
@@ -332,14 +354,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		/* 
-		 * Fixed autonomous by putting Scheduler.getInstance().run() method in the beginning of 
-		 * autonomous init.
-		 * 
-		 * Teleop was working and one of the only differences was that method 
-		 * in the beginning of Teleop periodic. All autonomous code works now after resetting the 
-		 * code.  
-		 */
+		
 		Scheduler.getInstance().run();
 		
 		SmartDashboard.putNumber("Right Encoder Distance", drivetrain.getRightEncoder().getDistance());

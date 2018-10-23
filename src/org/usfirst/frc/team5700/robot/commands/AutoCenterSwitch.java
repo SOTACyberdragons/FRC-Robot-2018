@@ -6,7 +6,6 @@ import org.usfirst.frc.team5700.robot.path.Waypoints.CenterToRightSwitch;
 import org.usfirst.frc.team5700.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-
 public class AutoCenterSwitch extends CommandGroup {
 	
     public AutoCenterSwitch(Side side) {

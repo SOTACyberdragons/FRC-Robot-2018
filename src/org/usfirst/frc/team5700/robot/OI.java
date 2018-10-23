@@ -39,10 +39,12 @@ public class OI {
 	JoystickButton spinIntakeIn;
 	JoystickButton spitIntakeOut;
 	JoystickButton extendIntake;
+	JoystickButton auxExtendIntake;
 	
 	//Grabber
 	JoystickButton releaseCube;
 	JoystickButton grabCube;
+	//JoystickButton driveGrabberOpen;
 	
 	//Climber
 	JoystickButton climberUp;
@@ -80,11 +82,14 @@ public class OI {
 		spinIntakeIn = new JoystickButton (driveRightStick, ButtonMap.SPIN_INTAKE_IN);
 		spitIntakeOut = new JoystickButton (driveLeftStick, ButtonMap.SPIN_INTAKE_OUT);
 		extendIntake = new JoystickButton (driveRightStick, ButtonMap.EXTEND_INTAKE);
+		auxExtendIntake = new JoystickButton(auxLeftStick, ButtonMap.AUX_EXTEND_INT1AKE);
 		vaultMode = new JoystickButton(driveRightStick, ButtonMap.VAULT_MODE);
+		
 		
 		//Grabber
 		releaseCube = new JoystickButton(auxRightStick, ButtonMap.GRABBER_OPEN);
 		grabCube = new JoystickButton(auxRightStick, ButtonMap.GRABBER_CLOSE);
+		//driveGrabberOpen = new JoystickButton(driveLeftStick, ButtonMap.DRIVE_GRABBER_OPEN);
 		
 		//Climber
 		climberUp = new JoystickButton(auxRightStick, ButtonMap.CLIMBER_UP);
@@ -120,10 +125,12 @@ public class OI {
 		spinIntakeIn.whileHeld(new IntakeSpinIn());
 		extendIntake.whileHeld(new ExtendIntake());
 		spitIntakeOut.whileHeld(new IntakeSpitOut());
+		auxExtendIntake.whileHeld(new ExtendIntake());
 		
 		//grabber
 		grabCube.whenPressed(new GrabCube());
 		releaseCube.whenPressed(new ReleaseCube());
+		//driveGrabberOpen.whenPressed(new ReleaseCube());
 		
 		//climber
 		climberUp.whileHeld(new ClimberUp());

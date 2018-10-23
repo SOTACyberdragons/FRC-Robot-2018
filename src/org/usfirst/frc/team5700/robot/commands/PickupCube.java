@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class PickupCube extends CommandGroup {
 
     public PickupCube() {
+    	addSequential(new MoveArmToAngle(0));
     	addSequential(new ReleaseCube());
     	addSequential(new MoveElevatorDistance(11), 0.5);
     	addParallel(new GrabCube());
