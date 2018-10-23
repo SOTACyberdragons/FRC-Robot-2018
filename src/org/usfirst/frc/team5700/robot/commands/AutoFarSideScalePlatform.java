@@ -19,11 +19,17 @@ public class AutoFarSideScalePlatform extends CommandGroup {
 				addSequential(new FollowPath(new LeftFarSideScalePlatform(), maxSpeed));
 				addSequential(new MoveElevatorDistance(58), 1.5);
 				addSequential(new MoveArmAndElevatorDistance(58, 270), 0.5);
+				addSequential(new ReleaseCube(), 0.5);
+				//move to cruise 
+				addSequential(new MoveArmAndElevatorDistance(2, 180, 0.5, 0));
 			case RIGHT: 
 				//right starting position, scale will be on the left
 				addSequential(new FollowPath(new RightFarSideScalePlatform(), maxSpeed));
 				addSequential(new MoveElevatorDistance(58), 1.5);
 				addSequential(new MoveArmAndElevatorDistance(58, 90), 0.5);
+				addSequential(new ReleaseCube(), 0.5);
+				//move to cruise 
+				addSequential(new MoveArmAndElevatorDistance(2, 180, 0.5, 0));
 		}
 		
     	
