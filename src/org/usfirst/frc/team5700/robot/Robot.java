@@ -92,6 +92,7 @@ public class Robot extends IterativeRobot {
 	private Command autoRightSideSwitch;
 	private Command autoRightSideScale;
 	private Command autoRightFarSideScalePlatform;
+	private Command autoLeftFarSideScalePlatform;
 
 	//Left Side
 	private Command autoLeftSideScale;
@@ -117,11 +118,12 @@ public class Robot extends IterativeRobot {
 		//Right Side
 		autoRightSideSwitch = new AutoSideSwitch(Side.RIGHT);
 		autoRightSideScale = new AutoSideScale(Side.RIGHT);
+		autoRightFarSideScalePlatform = new AutoFarSideScalePlatform(Side.RIGHT);
 
 		//Left Side
 		autoLeftSideSwitch = new AutoSideSwitch(Side.LEFT);
 		autoLeftSideScale = new AutoSideScale(Side.LEFT);
-		autoRightFarSideScalePlatform = new AutoFarSideScalePlatform();
+		autoLeftFarSideScalePlatform = new AutoFarSideScalePlatform(Side.LEFT);
 		System.out.println("Done initializing path commands.");
 		
 		SmartDashboard.putData("autoCrossBaselineCenter", autoCrossBaselineCenter);
@@ -133,6 +135,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("autoLeftSideSwitch", autoLeftSideSwitch);
 		SmartDashboard.putData("autoLeftSideScale", autoLeftSideScale);
 		SmartDashboard.putData("autoRightFarSideScalePlatform", autoRightFarSideScalePlatform);
+		SmartDashboard.putData("autoLeftFarSideScalePlatform", autoLeftFarSideScalePlatform);
 		
 	}
 
@@ -172,6 +175,7 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Left Side Switch Priority", AutoChoice.LEFT_SWITCH_PRIORITY);
 		chooser.addObject("Left Side Scale Priority", AutoChoice.LEFT_SCALE_PRIORITY);
 		chooser.addObject("Right Side Far Scale Platform Priority", AutoChoice.LEFT_FAR_SIDE_SCALE_PLATFORM);
+		chooser.addObject("Left Side Far Scale Platfrom Priority", AutoChoice.RIGHT_FAR_SIDE_SCALE_PLATFORM);
 //		chooser.addObject("Replay Test", AutoChoice.REPLAY_TEST);
 		SmartDashboard.putData("Autonomous Chooser", chooser);
 
@@ -283,7 +287,7 @@ public class Robot extends IterativeRobot {
 				break;
 		
 			case LEFT_SWITCH_PRIORITY:
-				if (switchSide == Side.LEFT){
+				if (switchSide == Side.LEFT) {
 					autoCommand = autoLeftSideSwitch;
 				} else if (scaleSide == Side.LEFT) {
 					autoCommand = autoLeftSideScale;
@@ -293,11 +297,15 @@ public class Robot extends IterativeRobot {
 				break;
 				
 			case LEFT_FAR_SIDE_SCALE_PLATFORM:
-				System.out.println("Picked far side platform scale");
-				autoCommand = autoRightFarSideScalePlatform;
-				System.out.println("set far side platform scale");
-				break;
-		
+				if (scaleSide == Side.LEFT) {
+					autoCommand = autoLeftFarSideScalePlatform;
+				} else if (scaleSide == Side.RIGHT) {
+					autoCommand = autoRightFarSideScalePlatform;
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+				break; 
+
 //			case REPLAY_TEST:
 //				autoCommand = new DriveReplay(replayChooser.getSelected());
 //				break;
