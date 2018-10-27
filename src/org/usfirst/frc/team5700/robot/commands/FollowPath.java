@@ -82,6 +82,7 @@ public class FollowPath extends Command {
 		// The fourth argument is the velocity ratio. This is 1 over the maximum velocity you provided in the 
 		// trajectory configuration (it translates m/s to a -1 to 1 scale that your motors can read)
 		// The fifth argument is your acceleration gain. Tweak this if you want to get to a higher or lower speed quicker
+		
 		left.configurePIDVA(kP, kI, kD, kF, kA);
 		right.configurePIDVA(kP, kI, kD, kF, kA);
 

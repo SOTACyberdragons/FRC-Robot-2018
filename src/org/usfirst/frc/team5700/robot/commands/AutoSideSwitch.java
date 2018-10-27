@@ -26,5 +26,7 @@ public class AutoSideSwitch extends CommandGroup {
     	}
     	
 		addSequential(new ReleaseCube());
+		//move to cruise
+		addSequential(new MoveArmAndElevatorDistance(2, 180, 0.5, 0));
     }
 }
