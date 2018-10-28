@@ -2,6 +2,7 @@ package org.usfirst.frc.team5700.robot.commands;
 
 import org.usfirst.frc.team5700.robot.Robot;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -14,13 +15,14 @@ public class AutoDoNotMove extends Command {
     }
     
 	protected void initialize() {
+
 	}
 
 	protected void execute() {
 	}
 
 	protected boolean isFinished() {
-		return true;
+		return false;
 	}
 
 	protected void end() {

@@ -71,16 +71,18 @@ public interface Waypoints {
 			};
 		}
 	}
-	
+	// perameters are (forward, side, angle)
 	public final class RightFarSideScalePlatform implements Waypoints {
 		public Waypoint[] points() {
 			return  new Waypoint[] {
 					new Waypoint(0, 0, 0),
 					new Waypoint(152,-20, 0),
-					new Waypoint(212.5, 47.4, Pathfinder.d2r(90)),
-					new Waypoint(212.5, 139, Pathfinder.d2r(50)),
-					new Waypoint(275.25, 145.07, Pathfinder.d2r(0)),
-					new Waypoint(285.25, 145.07, Pathfinder.d2r(-20))
+					new Waypoint(216.5, 42.4, Pathfinder.d2r(90)),
+					new Waypoint(216.5, 137.5, Pathfinder.d2r(50)),
+					//so it is straight before driving on the platform 
+					new Waypoint(226.6, 137.5, Pathfinder.d2r(0)),
+					new Waypoint(274.25, 145.07, Pathfinder.d2r(0)),
+					new Waypoint(280.25, 145.07, Pathfinder.d2r(-20))
 			};
 		}
 	}
@@ -90,11 +92,15 @@ public interface Waypoints {
 			return  new Waypoint[] {
 					new Waypoint(0, 0, 0),
 					new Waypoint(152, 20, 0),
-					new Waypoint(212.5, -47.4, Pathfinder.d2r(-90)),
-					new Waypoint(212.5, -139, Pathfinder.d2r(-50)),
-					new Waypoint(275.25, -145.07, Pathfinder.d2r(0)),
-					new Waypoint(285.25, -145.07, Pathfinder.d2r(20))
+					new Waypoint(216.5, -42.4, Pathfinder.d2r(-90)),
+					new Waypoint(216.5, -137.5, Pathfinder.d2r(-50)),
+					//so it is straight before driving on the platform 
+					new Waypoint(226.6, -137.5, Pathfinder.d2r(0)),
+					new Waypoint(274.25, -145.07, Pathfinder.d2r(0)),
+					new Waypoint(280.25, -145.07, Pathfinder.d2r(20))
 			};
  		}
 	}
+	
+	
 }

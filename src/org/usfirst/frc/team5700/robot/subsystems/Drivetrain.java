@@ -75,7 +75,9 @@ public class Drivetrain extends Subsystem {
 		gyro = new ADXRS450_Gyro();
 		gyro.setName("Drivetrain", "Gyro");
 
-		leftEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
+		//leftEncoder.setDistancePerPulse(1.04658769*DISTANCE_PER_PULSE);
+		leftEncoder.setDistancePerPulse(1.1*DISTANCE_PER_PULSE);
+
 		rightEncoder.setDistancePerPulse(DISTANCE_PER_PULSE);
 
 		timer = new Timer();

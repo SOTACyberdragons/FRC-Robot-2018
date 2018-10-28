@@ -176,6 +176,8 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Left Side Scale Priority", AutoChoice.LEFT_SCALE_PRIORITY);
 		chooser.addObject("Right Side Far Scale Platform Priority", AutoChoice.LEFT_SIDE_SCALE_PLATFORM);
 		chooser.addObject("Left Side Far Scale Platfrom Priority", AutoChoice.RIGHT_SIDE_SCALE_PLATFORM);
+		chooser.addObject("Right Side Only Scale Priority", AutoChoice.RIGHT_SIDE_ONLY_SCALE_PRIORITY);
+		chooser.addObject("Left Side Only Scale Priority", AutoChoice.LEFT_SIDE_ONLY_SCALE_PRIORITY);
 //		chooser.addObject("Replay Test", AutoChoice.REPLAY_TEST);
 		SmartDashboard.putData("Autonomous Chooser", chooser);
 
@@ -295,7 +297,7 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break;
-				
+			// starting on the right but scale is on the left 	
 			case LEFT_SIDE_SCALE_PLATFORM:
 				if (scaleSide == Side.LEFT) {
 					autoCommand = autoRightFarSideScalePlatform;
@@ -305,7 +307,7 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break; 
-				
+			// starting on left but scale is on the right	
 			case RIGHT_SIDE_SCALE_PLATFORM:
 				if (scaleSide == Side.RIGHT) {
 					autoCommand = autoLeftFarSideScalePlatform;
@@ -315,6 +317,28 @@ public class Robot extends IterativeRobot {
 					autoCommand = autoCrossBaseline;
 				}
 				break; 
+			// starting on left for both scale possibilities 
+			case LEFT_SIDE_ONLY_SCALE_PRIORITY:
+				if (scaleSide == Side.LEFT) {
+					autoCommand = autoLeftSideScale;
+				} else if (scaleSide == Side.RIGHT) {
+					autoCommand = autoLeftFarSideScalePlatform;
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+				break;
+			// starting on right for both scale possibilities 
+			case RIGHT_SIDE_ONLY_SCALE_PRIORITY:
+				if (scaleSide == Side.RIGHT) {
+					autoCommand = autoRightSideScale; 
+				} else if (scaleSide == Side.LEFT) {
+					autoCommand = autoRightFarSideScalePlatform;
+				} else {
+					autoCommand = autoCrossBaseline;
+				}
+				break;
+				
+				
 
 //			case REPLAY_TEST:
 //				autoCommand = new DriveReplay(replayChooser.getSelected());
@@ -379,6 +403,9 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Left Encoder Distance", drivetrain.getLeftEncoder().getDistance());
 		SmartDashboard.putNumber("Right Encoder Speed", drivetrain.getRightEncoder().getRate());
 		SmartDashboard.putNumber("Left Encoder Speed", drivetrain.getLeftEncoder().getRate());
+		SmartDashboard.putNumber("Left Encoder Ticks", drivetrain.getLeftEncoder().getRaw());
+		SmartDashboard.putNumber("Right Encoder Ticks", drivetrain.getRightEncoder().getRaw());
+
 
 		//Intake
 		SmartDashboard.putBoolean("Front Break Beam", intake.getFrontBreakBeam());
