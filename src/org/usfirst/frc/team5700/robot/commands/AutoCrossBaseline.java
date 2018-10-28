@@ -11,9 +11,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoCrossBaseline extends CommandGroup {
 
 	double maxSpeed = Drivetrain.MAX_SPEED * 0.6;
-		
-    public AutoCrossBaseline() {
-//		addSequential(new DriveReplay("SideSwitch"));
+
+	public AutoCrossBaseline() {
 		addSequential(new FollowPath(new CrossBaseline(), maxSpeed));
-    }
+	}
 }

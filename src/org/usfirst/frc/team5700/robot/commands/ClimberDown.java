@@ -9,27 +9,27 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class ClimberDown extends Command {
 
-    public ClimberDown() {
-    		requires(Robot.climber);
-    }
+	public ClimberDown() {
+		requires(Robot.climber);
+	}
 
-    protected void initialize() {
-    }
+	protected void initialize() {
+	}
 
-    protected void execute() {
-    	Robot.climber.down(-1);
-    }
+	protected void execute() {
+		Robot.climber.down(-1);
+	}
 
-    protected boolean isFinished() {
-        return false;
-    }
+	protected boolean isFinished() {
+		return false;
+	}
 
-    protected void end() {
-    	Robot.climber.stop();
-    }
+	protected void end() {
+		Robot.climber.stop();
+	}
 
-    protected void interrupted() {
-    		end();
-    }
+	protected void interrupted() {
+		end();
+	}
 }
 

@@ -37,6 +37,8 @@ public class FollowPath extends Command {
 	private double lastAngleError;
 
 	public FollowPath(Waypoints waypoints, double maxSpeed) {
+		super();
+		requires(Robot.drivetrain);
 
 		System.out.println("Initializing Follow Path");
 

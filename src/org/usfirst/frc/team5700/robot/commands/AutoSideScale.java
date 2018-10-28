@@ -13,19 +13,22 @@ public class AutoSideScale extends CommandGroup {
 		double maxSpeed = Drivetrain.MAX_SPEED * 0.6;
 
 		switch (side) {
-			case LEFT:
-				//addSequential(new DriveReplay("LeftSideScale"));
-				addSequential(new FollowPath(new LeftSideScale(), maxSpeed));
-				addSequential(new MoveElevatorDistance(58), 1.5);
-				addSequential(new MoveArmAndElevatorDistance(58, 90), 0.5);
-				break;
-	
-			case RIGHT:
-				//addSequential(new AutoCrossBaseline());
-				addSequential(new FollowPath(new RightSideScale(), maxSpeed));
-				addSequential(new MoveElevatorDistance(58), 1.5);
-				addSequential(new MoveArmAndElevatorDistance(58, 270), 0.5);
-				break;
+		case LEFT:
+			//addSequential(new DriveReplay("LeftSideScale"));
+			addSequential(new FollowPath(new LeftSideScale(), maxSpeed));
+			addSequential(new MoveElevatorDistance(58), 1.5);
+			addSequential(new MoveArmAndElevatorDistance(58, 90), 0.5);
+			break;
+		case RIGHT:
+			//addSequential(new AutoCrossBaseline());
+			addSequential(new FollowPath(new RightSideScale(), maxSpeed));
+			addSequential(new MoveElevatorDistance(58), 1.5);
+			addSequential(new MoveArmAndElevatorDistance(58, 270), 0.5);
+			break;
+		case UNKNOWN:
+			break;
+		default:
+			break;
 		}
 
 		addSequential(new ReleaseCube());
